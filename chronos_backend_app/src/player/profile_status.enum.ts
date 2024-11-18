@@ -1,0 +1,7 @@
+export enum ProfileStatus {
+    AVAILABLE = "AVAILABLE",
+    ABSENT = "ABSENT",
+    NOT_AVAILABLE = "NOT AVAILABLE",
+    DO_NOT_DISTURB = "DO NOT DISTURB",
+    OFFLINE = "OFFLINE"
+}
