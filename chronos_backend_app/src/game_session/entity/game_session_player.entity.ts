@@ -1,4 +1,4 @@
-import { Model, Table, PrimaryKey, HasOne, ForeignKey, Column, DataType } from 'sequelize-typescript';
+import { Model, Table, PrimaryKey, ForeignKey, Column, DataType } from 'sequelize-typescript';
 
 import { Player } from '../../player/entity/player.entity';
 import { GameSession } from './game_session.entity';

@@ -1,20 +1,13 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 
+import { DatabaseConfigService } from './database_config.service';
+
 @Module({
     imports: [
-        SequelizeModule.forRoot({
-            dialect: "postgres",
-            host: process.env.DATABASE_HOST,
-            port: Number(process.env.DATABASE_PORT),
-            username: process.env.DATABASE_USERNAME,
-            password: process.env.DATABASE_PASSWORD,
-            database: process.env.DATABASE_NAME,
+        SequelizeModule.forRootAsync({
+            useClass: DatabaseConfigService,
         }),
     ],
 })
-export class DatabaseModule {
-    constructor() {
-        console.log(process.env)
-    }
-}
+export class DatabaseModule {}

@@ -3,10 +3,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
     ],
     providers: [
         ConfigService, 
+    ],
+    exports: [
+        ConfigModule,
     ],
 })
 export class ConfigurationModule {}

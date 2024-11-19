@@ -8,9 +8,6 @@ import { AvatarModule } from './avatar/avatar.module';
 import { DatabaseModule } from './database/database.module';
 import { GameSessionModule } from './game_session/game_session.module';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
 @Module({
     imports: [
         ConfigurationModule, 
@@ -21,7 +18,5 @@ import { AppService } from './app.service';
         AvatarModule,
         DatabaseModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
 })
 export class AppModule {}
