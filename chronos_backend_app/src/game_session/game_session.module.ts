@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
 
-import { GameSessionHttpModule } from './http/game_session_http.module';
-import { GameSessionEntityModule } from './entity/game_session_entity.module';
+import { GameSession } from './model/game_session.model';
+import { GameSessionPlayer } from './model/game_session_player.model';
+import { GameSessionController } from './controller/game_session.controller';
+import { GameSessionService } from './service/game_session.service';
 
 @Module({
     imports: [
-        GameSessionHttpModule,
-        GameSessionEntityModule,
+        SequelizeModule.forFeature([GameSession, GameSessionPlayer]),
     ],
-    exports: [
-        GameSessionHttpModule,
-        GameSessionEntityModule,
+    controllers: [
+        GameSessionController,
+    ],
+    providers: [
+        GameSessionService,
     ],
 })
 export class GameSessionModule {}

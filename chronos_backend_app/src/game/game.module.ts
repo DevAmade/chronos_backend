@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
 
-import { GameHttpModule } from './http/game_http.module';
-import { GameEntityModule } from './entity/game_entity.module';
+import { Game } from './model/game.model';
+import { GameController } from './controller/game.controller';
+import { GameService } from './service/game.service';
 
 @Module({
     imports: [
-        GameHttpModule,
-        GameEntityModule,
+        SequelizeModule.forFeature([Game]),
     ],
-    exports: [
-        GameHttpModule,
-        GameEntityModule,
+    controllers: [
+        GameController,
+    ],
+    providers: [
+        GameService,
     ],
 })
 export class GameModule {}

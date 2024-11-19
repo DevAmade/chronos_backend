@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
 
-import { AvatarHttpModule } from './http/avatar_http.module';
-import { AvatarEntityModule } from './entity/avatar_entity.module';
+import { Avatar } from './model/avatar.model';
+import { AvatarController } from './controller/avatar.controller';
+import { AvatarService } from './service/avatar.service';
 
 @Module({
     imports: [
-        AvatarHttpModule,
-        AvatarEntityModule,
+        SequelizeModule.forFeature([Avatar]),
     ],
-    exports: [
-        AvatarHttpModule,
-        AvatarEntityModule,
+    controllers: [
+        AvatarController,
+    ],
+    providers: [
+        AvatarService,
     ],
 })
 export class AvatarModule {}
