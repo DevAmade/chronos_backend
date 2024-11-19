@@ -1,4 +1,4 @@
-import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt, DataType } from 'sequelize-typescript';
 
 import { Player } from '../../player/entity/player.entity';
 import { Game } from '../../game/entity/game.entity';
@@ -7,34 +7,60 @@ import { Game } from '../../game/entity/game.entity';
 export class GameSession extends Model {
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        unique: true,
+        allowNull: false,
+    })
     id: number;
 
     @ForeignKey(() => Player)
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        allowNull: false,
+    })
     organizer_id: number;
 
     @ForeignKey(() => Game)
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        allowNull: false,
+    })
     game_id: number;
 
-    @Column
-    name: number;
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
+    name: string;
 
-    @Column
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
     startDate: Date;
 
-    @Column
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
     endDate: Date;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+    })
     description: string;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+    })
     chatRoom: string;
 
     @CreatedAt
-    @Column
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
     createdAt: Date;
 }
 

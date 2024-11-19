@@ -1,31 +1,56 @@
-import { Column, Model, Table, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, AutoIncrement, DataType } from 'sequelize-typescript';
 
 @Table
 export class Game extends Model {
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        unique: true,
+        allowNull: false,
+    })
     id: number;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        unique: true,
+        allowNull: false,
+    })
     name: string;
 
-    @Column
+    @Column({
+        type: DataType.BLOB,
+        unique: true,
+    })
     cover_photo: Buffer;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     editor: string;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+    })
     description: string;
 
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        allowNull: false,
+    })
     minNumberPlayers: number;
 
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        allowNull: false,
+    })
     maxNumberPlayers: number;
 
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        allowNull: false,
+    })
     PEGI: number;
 }
 

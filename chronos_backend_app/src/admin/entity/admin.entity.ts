@@ -1,4 +1,4 @@
-import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt, DataType } from 'sequelize-typescript';
 
 import { Avatar } from '../../avatar/entity/avatar.entity';
 
@@ -6,24 +6,42 @@ import { Avatar } from '../../avatar/entity/avatar.entity';
 export class Admin extends Model {
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        unique: true,
+        allowNull: false,
+    })
     id: number;
 
     @ForeignKey(() => Avatar)
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+    })
     avatar_id: number;
 
-    @Column
+    @Column({
+        type: DataType.BLOB,
+    })
     avatar_custom: Buffer;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        unique: true,
+        allowNull: false,
+    })
     pseudo: string;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     password: string;
 
     @CreatedAt
-    @Column
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
     createdAt: Date;
 }
 

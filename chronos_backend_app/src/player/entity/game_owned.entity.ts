@@ -1,4 +1,4 @@
-import { Model, Table, Column, PrimaryKey, ForeignKey } from 'sequelize-typescript';
+import { Model, Table, Column, PrimaryKey, ForeignKey, DataType } from 'sequelize-typescript';
 
 import { Game } from '../../game/entity/game.entity';
 import { Player } from './player.entity';
@@ -7,12 +7,20 @@ import { Player } from './player.entity';
 export class GameOwned extends Model {
     @PrimaryKey
     @ForeignKey(() => Player)
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        unique: true,
+        allowNull: false,
+    })
     player_id: number;
 
     @PrimaryKey
     @ForeignKey(() => Game)
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        unique: true,
+        allowNull: false,
+    })
     game_id: number;
 }
 

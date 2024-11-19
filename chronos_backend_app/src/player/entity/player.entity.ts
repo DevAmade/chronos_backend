@@ -1,4 +1,4 @@
-import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt, DataType } from 'sequelize-typescript';
 
 import { Avatar } from '../../avatar/entity/avatar.entity';
 import { ProfileStatus } from '../profile_status.enum';
@@ -7,48 +7,94 @@ import { ProfileStatus } from '../profile_status.enum';
 export class Player extends Model {
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+        unique: true,
+        allowNull: false,
+    })
     id: number;
 
     @ForeignKey(() => Avatar)
-    @Column
+    @Column({
+        type: DataType.NUMBER,
+    })
     avatar_id: number;
 
-    @Column
+    @Column({
+        type: DataType.BLOB,
+    })
     avatar_custom: Buffer;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        unique: true,
+        allowNull: false,
+    })
     pseudo: string;
 
-    @Column({ defaultValue: ProfileStatus.AVAILABLE })
+    @Column({
+        type: DataType.ENUM,
+        values: [...typeof ProfileStatus],
+        allowNull: false,
+        defaultValue: ProfileStatus.AVAILABLE,
+    })
     profileStatus: ProfileStatus;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     firstName: string;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     lastName: string;
 
-    @Column
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
     birthdate: Date;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     phoneNumber: string;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        unique: true,
+        allowNull: false,
+    })
     email: string;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     password: string;
 
-    @Column
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     country: string;
 
-    @Column({ defaultValue: false })
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    })
     banned: boolean;
 
     @CreatedAt
-    @Column
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
     createdAt: Date;
 }
 
