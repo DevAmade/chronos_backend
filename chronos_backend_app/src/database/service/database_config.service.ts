@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { SequelizeModuleOptions, SequelizeOptionsFactory } from "@nestjs/sequelize";
 
-import { DATABASE_MODELS } from "../../database_models";
-
 @Injectable()
 export class DatabaseConfigService implements SequelizeOptionsFactory {
 
@@ -17,7 +15,8 @@ export class DatabaseConfigService implements SequelizeOptionsFactory {
             username: this.configService.get('DATABASE_USERNAME'),
             password: this.configService.get('DATABASE_PASSWORD'),
             database: this.configService.get('DATABASE_NAME'),
-            models: DATABASE_MODELS,
+            autoLoadModels: true,
+            logging: false,
         }
     }
 }

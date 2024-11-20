@@ -10,8 +10,5 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     providers: [
         ConfigService, 
     ],
-    exports: [
-        ConfigModule,
-    ],
 })
 export class ConfigurationModule {}

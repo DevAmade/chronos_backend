@@ -6,6 +6,7 @@ import { FavoritePlayer } from './model/favorite_player.model';
 import { GameOwned } from './model/game_owned.model';
 import { PlayerController } from './controller/player.controller';
 import { PlayerService } from './service/player.service';
+import { CrudService } from '@nestjsx/crud';
 
 @Module({
     imports: [

@@ -1,0 +1,1 @@
+export const REGEX_NORMALIZE = '^[a-zA-Z]+$';

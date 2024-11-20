@@ -1,32 +1,35 @@
-import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, ForeignKey, CreatedAt, UpdatedAt, DataType } from 'sequelize-typescript';
+import { UUID } from 'node:crypto';
 
 import { Player } from '../../player/model/player.model';
 import { Game } from '../../game/model/game.model';
 
-@Table
+@Table({ tableName: 'game_session' })
 export class GameSession extends Model {
-    @AutoIncrement
     @PrimaryKey
     @Column({
-        type: DataType.NUMBER,
+        type: DataType.UUID,
         unique: true,
         allowNull: false,
+        defaultValue: DataType.UUIDV4,
     })
-    id: number;
+    id: UUID;
 
     @ForeignKey(() => Player)
     @Column({
-        type: DataType.NUMBER,
+        field: 'organizer_id',
+        type: DataType.UUID,
         allowNull: false,
     })
-    organizer_id: number;
+    organizerId: UUID;
 
     @ForeignKey(() => Game)
     @Column({
-        type: DataType.NUMBER,
+        field: 'game_id',
+        type: DataType.UUID,
         allowNull: false,
     })
-    game_id: number;
+    gameId: UUID;
 
     @Column({
         type: DataType.STRING,
@@ -35,12 +38,14 @@ export class GameSession extends Model {
     name: string;
 
     @Column({
+        field: 'start_date',
         type: DataType.DATE,
         allowNull: false,
     })
     startDate: Date;
 
     @Column({
+        field: 'end_date',
         type: DataType.DATE,
         allowNull: false,
     })
@@ -52,32 +57,24 @@ export class GameSession extends Model {
     description: string;
 
     @Column({
+        field: 'chat_room',
         type: DataType.STRING,
     })
     chatRoom: string;
 
     @CreatedAt
     @Column({
+        field: 'created_at',
         type: DataType.DATE,
         allowNull: false,
     })
     createdAt: Date;
-}
 
-// CREATE TABLE game_session (
-//     ID SERIAL PRIMARY KEY,
-//     organizer_id INT NOT NULL,
-//     game_id INT NOT NULL,
-//     name VARCHAR(255) NOT NULL,
-//     start_date TIMESTAMP NOT NULL,
-//     end_date TIMESTAMP NOT NULL,
-//     description VARCHAR(255),
-//     chat_room VARCHAR(255),
-//     created_at TIMESTAMP NOT NULL,
-//     CONSTRAINT fk_organizer
-//         FOREIGN KEY (organizer_id)
-//         REFERENCES player(ID),
-//     CONSTRAINT fk_game
-//         FOREIGN KEY (game_id)
-//         REFERENCES game(ID)
-// );
+    @UpdatedAt
+    @Column({
+        field: 'updated_at',
+        type: DataType.DATE,
+        allowNull: false,
+    })
+    updatedAt: Date;
+}

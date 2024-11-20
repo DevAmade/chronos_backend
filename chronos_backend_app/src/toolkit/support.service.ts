@@ -1,33 +1,50 @@
-import { InjectModel } from '@nestjs/sequelize';
 import { Model, Repository } from 'sequelize-typescript';
 import { UpdateOptions } from 'sequelize/types';
+import { UUID } from 'node:crypto';
 
-export class SupportService<M extends Model<M>> {
+export abstract class SupportService<C, U, M extends Model> {
     
-    constructor(@InjectModel(Model<M>) protected readonly model: Repository<M>) {}
+    constructor(protected readonly model: Repository<M>) {}
 
-    async findOne(id: number): Promise<M> {
-        return this.model.findByPk(id);
+    async findOne(id: UUID): Promise<M> {
+        try {
+            return await this.model.findByPk(id);
+        } catch(err) {
+            throw new Error(err);
+        }
     }
 
     async findAll(): Promise<M[]> {
-        return this.model.findAll();
+        try {
+            return await this.model.findAll();
+        } catch(err) {
+            throw new Error(err);
+        }
     }
 
-    async create(data: any): Promise<M> {
-        return await this.model.create(data);
+    async create(data: C): Promise<M> {
+        try {
+            return await this.model.create(data as any);
+        } catch(err) {
+            throw new Error(err);
+        } 
     }
 
-    async update(id: number, data: M): Promise<any> {
-        const options: UpdateOptions = {
-            where: { id },
-        };
-
-        return this.model.update(data, options);
+    async update(id: UUID, data: U): Promise<[affectedCount: number]> {
+        try {
+            const options: UpdateOptions = { where: { id }, returning: true };
+            return await this.model.update(data, options);
+        } catch(err) {
+            throw new Error(err);
+        }
     }
 
-    async remove(id: number): Promise<void> {
-        const object = await this.findOne(id);
-        await object.destroy();
+    async delete(id: UUID): Promise<void> {
+        try {
+            const deleteModel = await this.findOne(id);
+            await deleteModel.destroy();
+        } catch(err) {
+            throw new Error(err);
+        }
     }
 }

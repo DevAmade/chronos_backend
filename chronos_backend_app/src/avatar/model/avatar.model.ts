@@ -1,15 +1,16 @@
-import { Column, Model, Table, PrimaryKey, AutoIncrement, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, DataType } from 'sequelize-typescript';
+import { UUID } from 'node:crypto';
 
-@Table
+@Table({ tableName: 'avatar', timestamps: false })
 export class Avatar extends Model {
-    @AutoIncrement
     @PrimaryKey
     @Column({
-        type: DataType.NUMBER,
+        type: DataType.UUID,
         unique: true,
         allowNull: false,
+        defaultValue: DataType.UUIDV4,
     })
-    id: number;
+    id: UUID;
 
     @Column({
         type: DataType.STRING,
@@ -25,9 +26,3 @@ export class Avatar extends Model {
     })
     photo: Buffer;
 }
-
-// CREATE TABLE avatar (
-//     ID SERIAL PRIMARY KEY,
-//     name VARCHAR(255) NOT NULL UNIQUE,
-//     photo BYTEA NOT NULL UNIQUE
-// );

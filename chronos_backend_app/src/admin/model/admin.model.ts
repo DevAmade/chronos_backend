@@ -1,28 +1,31 @@
-import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, ForeignKey, CreatedAt, DataType, UpdatedAt } from 'sequelize-typescript';
+import { UUID } from 'node:crypto';
 
 import { Avatar } from '../../avatar/model/avatar.model';
 
-@Table
+@Table({ tableName: 'admin' })
 export class Admin extends Model {
-    @AutoIncrement
     @PrimaryKey
     @Column({
-        type: DataType.NUMBER,
+        type: DataType.UUID,
         unique: true,
         allowNull: false,
+        defaultValue: DataType.UUIDV4,
     })
-    id: number;
+    id: UUID;
 
     @ForeignKey(() => Avatar)
     @Column({
-        type: DataType.NUMBER,
+        field: 'avatar_id',
+        type: DataType.UUID,
     })
-    avatar_id: number;
+    avatarId: UUID;
 
     @Column({
+        field: 'avatar_custom',
         type: DataType.BLOB,
     })
-    avatar_custom: Buffer;
+    avatarCustom: Buffer;
 
     @Column({
         type: DataType.STRING,
@@ -39,20 +42,17 @@ export class Admin extends Model {
 
     @CreatedAt
     @Column({
+        field: 'created_at',
         type: DataType.DATE,
         allowNull: false,
     })
     createdAt: Date;
-}
 
-// CREATE TABLE admin (
-//     ID SERIAL PRIMARY KEY,
-//     avatar_id INT,
-//     avatar_custom BYTEA,
-//     pseudo VARCHAR(255) NOT NULL UNIQUE,
-//     password VARCHAR(255) NOT NULL,
-//     created_at TIMESTAMP NOT NULL,
-//     CONSTRAINT fk_avatar
-//         FOREIGN KEY (avatar_id)
-//         REFERENCES avatar(ID)
-// );
+    @UpdatedAt
+    @Column({
+        field: 'updated_at',
+        type: DataType.DATE,
+        allowNull: false,
+    })
+    updatedAt: Date;
+}

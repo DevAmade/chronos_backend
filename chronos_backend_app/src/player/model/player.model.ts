@@ -1,29 +1,32 @@
-import { Column, Model, Table, PrimaryKey, ForeignKey, AutoIncrement, CreatedAt, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, ForeignKey, CreatedAt, UpdatedAt, DataType } from 'sequelize-typescript';
+import { UUID } from 'node:crypto';
 
 import { Avatar } from '../../avatar/model/avatar.model';
 import { ProfileStatus } from '../toolkit/profile_status.enum';
 
-@Table
+@Table({ tableName: 'player' })
 export class Player extends Model {
-    @AutoIncrement
     @PrimaryKey
     @Column({
-        type: DataType.NUMBER,
+        type: DataType.UUID,
         unique: true,
         allowNull: false,
+        defaultValue: DataType.UUIDV4,
     })
-    id: number;
+    id: UUID;
 
     @ForeignKey(() => Avatar)
     @Column({
-        type: DataType.NUMBER,
+        field: 'avatar_id',
+        type: DataType.UUID,
     })
-    avatar_id: number;
+    avatarId: UUID;
 
     @Column({
+        field: 'avatar_custom',
         type: DataType.BLOB,
     })
-    avatar_custom: Buffer;
+    avatarCustom: Buffer;
 
     @Column({
         type: DataType.STRING,
@@ -33,20 +36,23 @@ export class Player extends Model {
     pseudo: string;
 
     @Column({
+        field: 'profile_status',
         type: DataType.ENUM,
-        values: [...typeof ProfileStatus],
+        values: Object.values(ProfileStatus),
         allowNull: false,
         defaultValue: ProfileStatus.AVAILABLE,
     })
     profileStatus: ProfileStatus;
 
     @Column({
+        field: 'first_name',
         type: DataType.STRING,
         allowNull: false,
     })
     firstName: string;
 
     @Column({
+        field: 'last_name',
         type: DataType.STRING,
         allowNull: false,
     })
@@ -59,6 +65,7 @@ export class Player extends Model {
     birthdate: Date;
 
     @Column({
+        field: 'phone_number',
         type: DataType.STRING,
         allowNull: false,
     })
@@ -92,28 +99,17 @@ export class Player extends Model {
 
     @CreatedAt
     @Column({
+        field: 'created_at',
         type: DataType.DATE,
         allowNull: false,
     })
     createdAt: Date;
-}
 
-// CREATE TABLE player (
-//     ID SERIAL PRIMARY KEY,
-//     avatar_id INT,
-//     avatar_custom BYTEA,
-//     pseudo VARCHAR(255) NOT NULL UNIQUE,
-//     profile_status VARCHAR(255) NOT NULL,
-//     first_name VARCHAR(255) NOT NULL,
-//     last_name VARCHAR(255) NOT NULL,
-//     birthdate DATE NOT NULL,
-//     phone_number VARCHAR(255) NOT NULL,
-//     email VARCHAR(255) NOT NULL UNIQUE,
-//     password VARCHAR(255) NOT NULL,
-//     country VARCHAR(255) NOT NULL,
-//     banned BOOLEAN NOT NULL,
-//     created_at TIMESTAMP NOT NULL,
-//     CONSTRAINT fk_avatar
-//         FOREIGN KEY (avatar_id)
-//         REFERENCES avatar(ID)
-// );
+    @UpdatedAt
+    @Column({
+        field: 'updated_at',
+        type: DataType.DATE,
+        allowNull: false,
+    })
+    updatedAt: Date;
+}

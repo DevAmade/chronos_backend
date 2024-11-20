@@ -1,37 +1,26 @@
 import { Model, Table, Column, PrimaryKey, ForeignKey, DataType } from 'sequelize-typescript';
+import { UUID } from 'node:crypto';
 
 import { Game } from '../../game/model/game.model';
 import { Player } from './player.model';
 
-@Table
+@Table({ tableName: 'game_owned', timestamps: false })
 export class GameOwned extends Model {
     @PrimaryKey
     @ForeignKey(() => Player)
     @Column({
-        type: DataType.NUMBER,
-        unique: true,
+        field: 'player_id',
+        type: DataType.UUID,
         allowNull: false,
     })
-    player_id: number;
+    playerId: UUID;
 
     @PrimaryKey
     @ForeignKey(() => Game)
     @Column({
-        type: DataType.NUMBER,
-        unique: true,
+        field: 'game_id',
+        type: DataType.UUID,
         allowNull: false,
     })
-    game_id: number;
+    gameId: UUID;
 }
-
-// CREATE TABLE game_owned (
-//     player_id INT,
-//     game_id INT,
-//     PRIMARY KEY (player_id, game_id),
-//     CONSTRAINT fk_player
-//         FOREIGN KEY (player_id)
-//         REFERENCES player(ID),
-//     CONSTRAINT fk_game
-//         FOREIGN KEY (game_id)
-//         REFERENCES game(ID)
-// );

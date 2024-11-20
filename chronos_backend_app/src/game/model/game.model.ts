@@ -1,15 +1,16 @@
-import { Column, Model, Table, PrimaryKey, AutoIncrement, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, DataType } from 'sequelize-typescript';
+import { UUID } from 'node:crypto';
 
-@Table
+@Table({ tableName: 'game', timestamps: false })
 export class Game extends Model {
-    @AutoIncrement
     @PrimaryKey
     @Column({
-        type: DataType.NUMBER,
+        type: DataType.UUID,
         unique: true,
         allowNull: false,
+        defaultValue: DataType.UUIDV4,
     })
-    id: number;
+    id: UUID;
 
     @Column({
         type: DataType.STRING,
@@ -19,10 +20,11 @@ export class Game extends Model {
     name: string;
 
     @Column({
+        field: 'cover_photo',
         type: DataType.BLOB,
         unique: true,
     })
-    cover_photo: Buffer;
+    coverPhoto: Buffer;
 
     @Column({
         type: DataType.STRING,
@@ -36,12 +38,14 @@ export class Game extends Model {
     description: string;
 
     @Column({
+        field: 'min_number_players',
         type: DataType.NUMBER,
         allowNull: false,
     })
     minNumberPlayers: number;
 
     @Column({
+        field: 'max_number_players',
         type: DataType.NUMBER,
         allowNull: false,
     })
@@ -53,14 +57,3 @@ export class Game extends Model {
     })
     PEGI: number;
 }
-
-// CREATE TABLE game (
-//     ID SERIAL PRIMARY KEY,
-//     name VARCHAR(255) NOT NULL UNIQUE,
-//     cover_photo BYTEA UNIQUE,
-//     editor VARCHAR(255) NOT NULL,
-//     description VARCHAR(255),
-//     min_number_players INT NOT NULL,
-//     max_number_players INT NOT NULL,
-//     PEGI INT NOT NULL
-// );

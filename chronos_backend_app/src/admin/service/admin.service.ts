@@ -3,10 +3,13 @@ import { InjectModel } from '@nestjs/sequelize';
 
 import { SupportService } from '../../toolkit/support.service';
 import { Admin } from '../model/admin.model';
+import { CreateAdminDto } from '../dto/create_admin.dto';
+import { UpdateAdminDto } from '../dto/update_admin.dto';
 
 @Injectable()
-export class AdminService extends SupportService<Admin> {
-    constructor(@InjectModel(Admin) protected readonly model: typeof Admin) {
-        super(model);
-    }
+export class AdminService 
+    extends SupportService<CreateAdminDto, UpdateAdminDto, Admin> {
+        constructor(@InjectModel(Admin) protected readonly model: typeof Admin) {
+            super(model);
+        }
 }

@@ -1,16 +1,17 @@
-import { Body, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Delete, Get, HttpCode, Param, ParseUUIDPipe } from '@nestjs/common';
 import { Model } from 'sequelize-typescript';
+import { UUID } from 'node:crypto';
 
 import { SupportService } from './support.service';
 import { StatusCode } from './status_code.enum';
 
-export class SupportController<M extends Model<M>> {
+export abstract class SupportController<C, U, M extends Model> {
 
-    constructor(protected readonly service: SupportService<M>) {}
+    constructor(protected readonly service: SupportService<C, U, M>) {}
 
     @Get(':id')
     @HttpCode(StatusCode.SUCCESS)
-    findOne(@Param('id') id: number): Promise<M> {
+    findOne(@Param('id', ParseUUIDPipe) id: UUID): Promise<M> {
         return this.service.findOne(id);
     }
 
@@ -20,21 +21,9 @@ export class SupportController<M extends Model<M>> {
         return this.service.findAll();
     }
 
-    @Post()
-    @HttpCode(StatusCode.CREATED)
-    create(@Body() data: any): Promise<M> {
-        return this.service.create(data);
-    }
-
-    @Put(':id')
-    @HttpCode(StatusCode.SUCCESS)
-    update(@Param('id') id: number, @Body() data: any): Promise<[number, M[]]> {
-        return this.service.update(id, data);
-    }
-
     @Delete(':id')
     @HttpCode(StatusCode.NO_CONTENT)
-    remove(@Param('id') id: number): Promise<void> {
-        return this.service.remove(id);
+    remove(@Param('id', ParseUUIDPipe) id: UUID): Promise<void> {
+        return this.service.delete(id);
     }
 }
