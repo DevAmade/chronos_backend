@@ -1,8 +1,9 @@
-import { Body, Controller, Param, ParseUUIDPipe, Post, Put, UsePipes } from '@nestjs/common';
+import { Body, Controller, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
 import { HashPasswordPipe } from '../../../core/pipe/hash_password.pipe';
+import { XSSPipe } from '../../../core/pipe/xss.pipe';
 
 import { Admin } from '../model/admin.model';
 import { AdminService } from '../service/admin.service';
@@ -23,15 +24,14 @@ export class AdminController
         }
 
         @Post()
-        @UsePipes(HashPasswordPipe)
-        create(@Body() data: CreateAdminDto): Promise<Admin> {
+        create(@Body(HashPasswordPipe, XSSPipe) data: CreateAdminDto): Promise<Admin> {
             return this.service.create(data);
         }
     
         @Put(':id')
         update(
             @Param('id', ParseUUIDPipe) id: UUID,
-            @Body() data: UpdateAdminDto,
+            @Body(HashPasswordPipe, XSSPipe) data: UpdateAdminDto,
         ): Promise<[affectedCount: number] | Error> {
             return this.service.update(id, data);
         }

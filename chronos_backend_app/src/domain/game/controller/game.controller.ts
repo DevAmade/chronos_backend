@@ -2,6 +2,7 @@ import { Body, Controller, Param, ParseUUIDPipe, Post, Put } from '@nestjs/commo
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
+import { XSSPipe } from '../../../core/pipe/xss.pipe';
 
 import { Game } from '../model/game.model';
 import { GameService } from '../service/game.service';
@@ -16,14 +17,14 @@ export class GameController
         }
 
         @Post()
-        create(@Body() data: CreateGameDto): Promise<Game> {
+        create(@Body(XSSPipe) data: CreateGameDto): Promise<Game> {
             return this.service.create(data);
         }
     
         @Put(':id')
         update(
             @Param('id', ParseUUIDPipe) id: UUID,
-            @Body() data: UpdateGameDto,
+            @Body(XSSPipe) data: UpdateGameDto,
         ): Promise<[affectedCount: number] | Error> {
             return this.service.update(id, data);
         }

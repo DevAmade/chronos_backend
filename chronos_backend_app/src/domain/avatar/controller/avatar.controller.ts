@@ -1,8 +1,8 @@
 import { Body, Controller, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 
-
 import { SupportController } from '../../../core/toolkit/support.controller';
+import { XSSPipe } from '../../../core/pipe/xss.pipe';
 
 import { Avatar } from '../model/avatar.model';
 import { AvatarService } from '../service/avatar.service';
@@ -17,14 +17,14 @@ export class AvatarController
         }
 
         @Post()
-        create(@Body() data: CreateAvatarDto): Promise<Avatar> {
+        create(@Body(XSSPipe) data: CreateAvatarDto): Promise<Avatar> {
             return this.service.create(data);
         }
     
         @Put(':id')
         update(
             @Param('id', ParseUUIDPipe) id: UUID,
-            @Body() data: UpdateAvatarDto,
+            @Body(XSSPipe) data: UpdateAvatarDto,
         ): Promise<[affectedCount: number] | Error> {
             return this.service.update(id, data);
         }
