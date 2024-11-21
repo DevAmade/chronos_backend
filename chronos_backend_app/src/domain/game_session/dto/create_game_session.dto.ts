@@ -5,7 +5,7 @@ import { GAME_SESSION_DESCRIPTION_MAX_LENGTH,
          GAME_SESSION_DESCRIPTION_MIN_LENGTH,
          GAME_SESSION_NAME_MAX_LENGTH,
          GAME_SESSION_NAME_MIN_LENGTH,
-         GAME_SESSION_NAME_REGEX } from "../validation/config_validation";
+         GAME_SESSION_NAME_REGEX } from "../validation/validation.config";
 
 export class CreateGameSessionDto {
     @IsNotEmpty()

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { SequelizeModuleOptions, SequelizeOptionsFactory } from "@nestjs/sequelize";
 
-import { LOGGING_DATABASE } from "../../config/core_module.config";
+import { LOGGING_DATABASE } from "../../config/module.config";
 
 @Injectable()
 export class DatabaseConfigService implements SequelizeOptionsFactory {

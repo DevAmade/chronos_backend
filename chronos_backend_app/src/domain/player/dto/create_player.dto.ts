@@ -15,7 +15,7 @@ import { PLAYER_PASSWORD_MIN_LENGTH,
          PLAYER_FIRST_NAME_MAX_LENGTH,
          PLAYER_LAST_NAME_REGEX,
          PLAYER_LAST_NAME_MAX_LENGTH,
-         PLAYER_LAST_NAME_MIN_LENGTH } from "../validation/config_validation";
+         PLAYER_LAST_NAME_MIN_LENGTH } from "../validation/validation.config";
 
 export class CreatePlayerDto {
     @IsOptional()

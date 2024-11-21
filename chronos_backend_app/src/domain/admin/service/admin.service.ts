@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 import { SupportService } from '../../../core/toolkit/support.service';
 
+import { ADMIN_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Admin } from '../model/admin.model';
 import { CreateAdminDto } from '../dto/create_admin.dto';
 import { UpdateAdminDto } from '../dto/update_admin.dto';
@@ -42,7 +43,10 @@ export class AdminService
                 };
     
                 return {
-                    token: await this.jwtService.signAsync(payload, { expiresIn: '1d', secret: this.configService.get('JWT_KEY_ADMIN') })
+                    token: await this.jwtService.signAsync(
+                        payload, 
+                        { expiresIn: ADMIN_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_ADMIN') }
+                    )
                 }
             } catch(err) {
                 throw new Error(err);

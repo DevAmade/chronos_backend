@@ -7,7 +7,7 @@ import { GAME_DESCRIPTION_MAX_LENGTH,
          GAME_EDITOR_REGEX, 
          GAME_NAME_MAX_LENGTH, 
          GAME_NAME_MIN_LENGTH,
-         GAME_NAME_REGEX } from "../validation/config_validation";
+         GAME_NAME_REGEX } from "../validation/validation.config";
 
 export class CreateGameDto {
     @IsNotEmpty()

@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 import { SupportService } from '../../../core/toolkit/support.service';
 
+import { PLAYER_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Player } from '../model/player.model';
 import { CreatePlayerDto } from '../dto/create_player.dto';
 import { UpdatePlayerDto } from '../dto/update_player.dto';
@@ -47,7 +48,7 @@ export class PlayerService
                 return {
                     token: await this.jwtService.signAsync(
                         payload, 
-                        { expiresIn: '1d', secret: this.configService.get('JWT_KEY_PLAYER') }
+                        { expiresIn: PLAYER_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_PLAYER') }
                     )
                 }
             } catch(err) {

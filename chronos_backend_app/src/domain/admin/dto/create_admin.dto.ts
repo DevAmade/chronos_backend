@@ -8,7 +8,7 @@ import { ADMIN_PASSWORD_MIN_LENGTH,
          ADMIN_PASSWORD_MIN_UPPERCASE,
          ADMIN_PSEUDO_MAX_LENGTH,
          ADMIN_PSEUDO_MIN_LENGTH,
-         ADMIN_PSEUDO_REGEX } from "../validation/config_validation";
+         ADMIN_PSEUDO_REGEX } from "../validation/validation.config";
 
 export class CreateAdminDto {
     @IsOptional()
