@@ -22,7 +22,7 @@ export class PlayerService
             super(model);
         }
 
-        async authenticatePlayer(data: AuthPlayerDto) {
+        async authenticatePlayer(data: AuthPlayerDto): Promise<{ token: string } | Error> {
             try {
                 const player = await this.findOneByIdentifier(data.email, 'email');
     

@@ -18,7 +18,7 @@ export class AdminController
         }
 
         @Post('auth')
-        authAdmin(@Body() data: AuthAdminDto): Promise<any> {
+        authAdmin(@Body() data: AuthAdminDto): Promise<{ token: string } | Error> {
             return this.service.authenticateAdmin(data);
         }
 

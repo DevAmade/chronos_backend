@@ -18,7 +18,7 @@ export class PlayerController
         }
 
         @Post('auth')
-        authPlayer(@Body() data: AuthPlayerDto): Promise<any> {
+        authPlayer(@Body() data: AuthPlayerDto): Promise<{ token: string } | Error> {
             return this.service.authenticatePlayer(data);
         }
 

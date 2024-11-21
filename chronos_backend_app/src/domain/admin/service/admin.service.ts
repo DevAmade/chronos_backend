@@ -22,7 +22,7 @@ export class AdminService
             super(model);
         }
 
-        async authenticateAdmin(data: AuthAdminDto) {
+        async authenticateAdmin(data: AuthAdminDto): Promise<{ token: string } | Error> {
             try {
                 const admin = await this.findOneByIdentifier(data.pseudo, 'pseudo');
     
