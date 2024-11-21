@@ -1,7 +1,21 @@
 import { UUID } from "node:crypto";
-import { IsBase64, IsDateString, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
+import { IsBase64, IsDateString, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
 
-import { REGEX_NORMALIZE } from "../../toolkit/regex";
+import { CountryCodeEnum } from "../validation/country_code.enum";
+import { PLAYER_PASSWORD_MIN_LENGTH,
+         PLAYER_PASSWORD_MIN_LOWERCASE,
+         PLAYER_PASSWORD_MIN_NUMBERS,
+         PLAYER_PASSWORD_MIN_SYMBOLS,
+         PLAYER_PASSWORD_MIN_UPPERCASE,
+         PLAYER_PSEUDO_MAX_LENGTH,
+         PLAYER_PSEUDO_MIN_LENGTH,
+         PLAYER_PSEUDO_REGEX,
+         PLAYER_FIRST_NAME_REGEX,
+         PLAYER_FIRST_NAME_MIN_LENGTH,
+         PLAYER_FIRST_NAME_MAX_LENGTH,
+         PLAYER_LAST_NAME_REGEX,
+         PLAYER_LAST_NAME_MAX_LENGTH,
+         PLAYER_LAST_NAME_MIN_LENGTH } from "../validation/config_validation";
 
 export class CreatePlayerDto {
     @IsOptional()
@@ -13,15 +27,27 @@ export class CreatePlayerDto {
     avatarCustom: Buffer;
 
     @IsNotEmpty()
-    @Length(3, 15)
+    @Length(
+        PLAYER_PSEUDO_MIN_LENGTH,
+        PLAYER_PSEUDO_MAX_LENGTH
+    )
+    @Matches(PLAYER_PSEUDO_REGEX)
     pseudo: string;
 
     @IsNotEmpty()
-    @Matches(REGEX_NORMALIZE)
+    @Length(
+        PLAYER_FIRST_NAME_MIN_LENGTH,
+        PLAYER_FIRST_NAME_MAX_LENGTH
+    )
+    @Matches(PLAYER_FIRST_NAME_REGEX)
     firstName: string;
 
     @IsNotEmpty()
-    @Matches(REGEX_NORMALIZE)
+    @Length(
+        PLAYER_LAST_NAME_MIN_LENGTH,
+        PLAYER_LAST_NAME_MAX_LENGTH
+    )
+    @Matches(PLAYER_LAST_NAME_REGEX)
     lastName: string;
 
     @IsNotEmpty()
@@ -38,15 +64,15 @@ export class CreatePlayerDto {
 
     @IsNotEmpty()
     @IsStrongPassword({
-        minLength: 12,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
+        minLength: PLAYER_PASSWORD_MIN_LENGTH,
+        minLowercase: PLAYER_PASSWORD_MIN_LOWERCASE,
+        minUppercase: PLAYER_PASSWORD_MIN_UPPERCASE,
+        minNumbers: PLAYER_PASSWORD_MIN_NUMBERS,
+        minSymbols: PLAYER_PASSWORD_MIN_SYMBOLS,
     })
     password: string;
 
     @IsNotEmpty()
-    @IsString()
-    country: string;
+    @IsEnum(CountryCodeEnum)
+    country: CountryCodeEnum;
 }

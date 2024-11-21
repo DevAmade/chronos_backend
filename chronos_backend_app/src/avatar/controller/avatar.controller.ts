@@ -1,8 +1,7 @@
-import { Body, Controller, HttpCode, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../toolkit/support.controller';
-import { StatusCode } from '../../toolkit/status_code.enum';
 import { Avatar } from '../model/avatar.model';
 import { AvatarService } from '../service/avatar.service';
 import { CreateAvatarDto } from '../dto/create_avatar.dto';
@@ -16,17 +15,15 @@ export class AvatarController
         }
 
         @Post()
-        @HttpCode(StatusCode.CREATED)
         create(@Body() data: CreateAvatarDto): Promise<Avatar> {
             return this.service.create(data);
         }
     
         @Put(':id')
-        @HttpCode(StatusCode.SUCCESS)
         update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body() data: UpdateAvatarDto,
-        ): Promise<[affectedCount: number]> {
+        ): Promise<[affectedCount: number] | Error> {
             return this.service.update(id, data);
         }
 }

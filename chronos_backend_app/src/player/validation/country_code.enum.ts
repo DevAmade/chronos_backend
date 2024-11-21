@@ -1,0 +1,15 @@
+export enum CountryCodeEnum {
+    AD = 'AD',
+    BE = 'BE',
+    CH = 'CH',
+    DE = 'DE',
+    ES = 'ES',
+    FR = 'FR',
+    GB = 'GB',
+    IE = 'IE',
+    IT = 'IT',
+    LU = 'LU',
+    NL = 'NL',
+    PT = 'PT',
+    US = 'US',
+}

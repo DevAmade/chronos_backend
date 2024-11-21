@@ -1,8 +1,21 @@
-import { IsBase64, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBase64, IsNotEmpty, IsNumber, IsOptional, Length, Matches } from "class-validator";
+
+import { GAME_DESCRIPTION_MAX_LENGTH,
+         GAME_DESCRIPTION_MIN_LENGTH,
+         GAME_EDITOR_MAX_LENGTH,
+         GAME_EDITOR_MIN_LENGTH,
+         GAME_EDITOR_REGEX, 
+         GAME_NAME_MAX_LENGTH, 
+         GAME_NAME_MIN_LENGTH,
+         GAME_NAME_REGEX } from "../validation/config_validation";
 
 export class CreateGameDto {
     @IsNotEmpty()
-    @IsString()
+    @Length(
+        GAME_NAME_MIN_LENGTH,
+        GAME_NAME_MAX_LENGTH
+    )
+    @Matches(GAME_NAME_REGEX)
     name: string;
 
     @IsOptional()
@@ -10,11 +23,18 @@ export class CreateGameDto {
     coverPhoto: Buffer;
 
     @IsNotEmpty()
-    @IsString()
+    @Length(
+        GAME_EDITOR_MIN_LENGTH,
+        GAME_EDITOR_MAX_LENGTH
+    )
+    @Matches(GAME_EDITOR_REGEX)
     editor: string;
 
     @IsOptional()
-    @IsString()
+    @Length(
+        GAME_DESCRIPTION_MIN_LENGTH,
+        GAME_DESCRIPTION_MAX_LENGTH
+    )
     description: string;
 
     @IsNotEmpty()

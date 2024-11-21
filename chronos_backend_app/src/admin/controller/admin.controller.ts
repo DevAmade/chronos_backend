@@ -1,8 +1,7 @@
-import { Body, Controller, HttpCode, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../toolkit/support.controller';
-import { StatusCode } from '../../toolkit/status_code.enum';
 import { Admin } from '../model/admin.model';
 import { AdminService } from '../service/admin.service';
 import { CreateAdminDto } from '../dto/create_admin.dto';
@@ -16,17 +15,15 @@ export class AdminController
         }
 
         @Post()
-        @HttpCode(StatusCode.CREATED)
         create(@Body() data: CreateAdminDto): Promise<Admin> {
             return this.service.create(data);
         }
     
         @Put(':id')
-        @HttpCode(StatusCode.SUCCESS)
         update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body() data: UpdateAdminDto,
-        ): Promise<[affectedCount: number]> {
+        ): Promise<[affectedCount: number] | Error> {
             return this.service.update(id, data);
         }
 }

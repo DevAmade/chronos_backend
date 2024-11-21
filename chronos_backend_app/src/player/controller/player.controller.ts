@@ -1,8 +1,7 @@
-import { Body, Controller, HttpCode, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../toolkit/support.controller';
-import { StatusCode } from '../../toolkit/status_code.enum';
 import { Player } from '../model/player.model';
 import { PlayerService } from '../service/player.service';
 import { CreatePlayerDto } from '../dto/create_player.dto';
@@ -16,17 +15,15 @@ export class PlayerController
         }
 
         @Post()
-        @HttpCode(StatusCode.CREATED)
         create(@Body() data: CreatePlayerDto): Promise<Player> {
             return this.service.create(data);
         }
     
         @Put(':id')
-        @HttpCode(StatusCode.SUCCESS)
         update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body() data: UpdatePlayerDto,
-        ): Promise<[affectedCount: number]> {
+        ): Promise<[affectedCount: number] | Error> {
             return this.service.update(id, data);
         }
 }

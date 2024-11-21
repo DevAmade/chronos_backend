@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Model, Repository } from 'sequelize-typescript';
 import { UpdateOptions } from 'sequelize/types';
 import { UUID } from 'node:crypto';
@@ -6,9 +7,15 @@ export abstract class SupportService<C, U, M extends Model> {
     
     constructor(protected readonly model: Repository<M>) {}
 
-    async findOne(id: UUID): Promise<M> {
+    async findOne(id: UUID): Promise<M | Error> {
         try {
-            return await this.model.findByPk(id);
+            const findModel = await this.model.findByPk(id);
+
+            if(!findModel) {
+                return new NotFoundException();
+            }
+
+            return findModel;
         } catch(err) {
             throw new Error(err);
         }
@@ -30,18 +37,29 @@ export abstract class SupportService<C, U, M extends Model> {
         } 
     }
 
-    async update(id: UUID, data: U): Promise<[affectedCount: number]> {
+    async update(id: UUID, data: U): Promise<[affectedCount: number] | Error> {
         try {
             const options: UpdateOptions = { where: { id }, returning: true };
-            return await this.model.update(data, options);
+            const updateModel = await this.model.update(data, options);
+
+            if(updateModel[0] === 0) {
+                return new NotFoundException();
+            }
+
+            return updateModel;
         } catch(err) {
             throw new Error(err);
         }
     }
 
-    async delete(id: UUID): Promise<void> {
+    async delete(id: UUID): Promise<void | Error> {
         try {
-            const deleteModel = await this.findOne(id);
+            const deleteModel = await this.model.findByPk(id);
+
+            if(!deleteModel) {
+                return new NotFoundException();
+            }
+
             await deleteModel.destroy();
         } catch(err) {
             throw new Error(err);

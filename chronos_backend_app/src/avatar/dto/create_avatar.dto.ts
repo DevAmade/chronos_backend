@@ -1,8 +1,16 @@
-import { IsBase64, IsNotEmpty, IsString } from "class-validator";
+import { IsBase64, IsNotEmpty, Length, Matches } from "class-validator";
+
+import { AVATAR_NAME_MAX_LENGTH,
+         AVATAR_NAME_MIN_LENGTH,
+         AVATAR_NAME_REGEX } from "../validation/config_validation";
 
 export class CreateAvatarDto {
     @IsNotEmpty()
-    @IsString()
+    @Length(
+        AVATAR_NAME_MIN_LENGTH,
+        AVATAR_NAME_MAX_LENGTH
+    )
+    @Matches(AVATAR_NAME_REGEX)
     name: string;
 
     @IsNotEmpty()

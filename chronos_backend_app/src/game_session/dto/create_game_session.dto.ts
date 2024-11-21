@@ -1,5 +1,11 @@
-import { IsDate, IsNotEmpty, IsOptional, IsString, IsUrl, IsUUID, Length } from "class-validator";
+import { IsDate, IsNotEmpty, IsOptional, IsUrl, IsUUID, Length, Matches } from "class-validator";
 import { UUID } from "node:crypto";
+
+import { GAME_SESSION_DESCRIPTION_MAX_LENGTH,
+         GAME_SESSION_DESCRIPTION_MIN_LENGTH,
+         GAME_SESSION_NAME_MAX_LENGTH,
+         GAME_SESSION_NAME_MIN_LENGTH,
+         GAME_SESSION_NAME_REGEX } from "../validation/config_validation";
 
 export class CreateGameSessionDto {
     @IsNotEmpty()
@@ -11,7 +17,11 @@ export class CreateGameSessionDto {
     gameId: UUID;
 
     @IsNotEmpty()
-    @Length(3, 15)
+    @Length(
+        GAME_SESSION_NAME_MIN_LENGTH,
+        GAME_SESSION_NAME_MAX_LENGTH
+    )
+    @Matches(GAME_SESSION_NAME_REGEX)
     name: string;
 
     @IsNotEmpty()
@@ -23,10 +33,13 @@ export class CreateGameSessionDto {
     endDate: Date;
 
     @IsOptional()
-    @IsString()
+    @Length(
+        GAME_SESSION_DESCRIPTION_MIN_LENGTH,
+        GAME_SESSION_DESCRIPTION_MAX_LENGTH
+    )
     description: string;
 
     @IsOptional()
-    @IsUrl()
+    @IsUrl({ protocols: ['https'] })
     chatRoom: string;
 }

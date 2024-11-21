@@ -2,7 +2,7 @@ import { Column, Model, Table, PrimaryKey, ForeignKey, CreatedAt, UpdatedAt, Dat
 import { UUID } from 'node:crypto';
 
 import { Avatar } from '../../avatar/model/avatar.model';
-import { ProfileStatus } from '../toolkit/profile_status.enum';
+import { ProfileStatus } from '../validation/profile_status.enum';
 
 @Table({ tableName: 'player' })
 export class Player extends Model {
