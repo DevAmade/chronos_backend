@@ -1,4 +1,4 @@
-import { Body, Controller, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, NotFoundException, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
@@ -12,20 +12,37 @@ import { UpdateGameDto } from '../dto/update_game_dto';
 @Controller('game')
 export class GameController 
     extends SupportController<CreateGameDto, UpdateGameDto, Game> { 
-        constructor(protected readonly service: GameService) {
-            super(service);
+        constructor(protected readonly gameService: GameService) {
+            super(gameService);
         }
 
         @Post()
-        create(@Body(XSSPipe) data: CreateGameDto): Promise<Game> {
-            return this.service.create(data);
+        async create(@Body(XSSPipe) data: CreateGameDto): Promise<Game | Error> {
+            const existingDuplicate = await this.gameService.findOneByAttribute([{ name: data.name }, { cover_photo: data.coverPhoto }], 'or');
+
+            if(existingDuplicate) {
+                return new NotFoundException(); //TODO Unique exception
+            }
+
+            return await this.gameService.create(data);
         }
     
         @Put(':id')
-        update(
+        async update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body(XSSPipe) data: UpdateGameDto,
         ): Promise<[affectedCount: number] | Error> {
-            return this.service.update(id, data);
+            const existingGame = await this.gameService.findOneById(id);
+            const existingDuplicate = await this.gameService.findOneByAttribute([{ name: data.name }, { cover_photo: data.coverPhoto }], 'or');
+
+            if(!existingGame) {
+                return new NotFoundException();
+            }
+
+            if(existingDuplicate) {
+                return new NotFoundException(); //TODO Unique exception
+            }
+
+            return this.gameService.update(id, data);
         }
 }

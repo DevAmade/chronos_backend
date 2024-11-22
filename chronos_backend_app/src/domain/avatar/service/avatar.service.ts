@@ -10,7 +10,7 @@ import { UpdateAvatarDto } from '../dto/update_avatar.dto';
 @Injectable()
 export class AvatarService 
     extends SupportService<CreateAvatarDto, UpdateAvatarDto, Avatar> {
-        constructor(@InjectModel(Avatar) protected readonly model: typeof Avatar) {
-            super(model);
+        constructor(@InjectModel(Avatar) protected readonly avatarModel: typeof Avatar) {
+            super(avatarModel);
         }
 }

@@ -10,7 +10,7 @@ import { UpdateGameSessionDto } from '../dto/update_game_session.dto';
 @Injectable()
 export class GameSessionService 
     extends SupportService<CreateGameSessionDto, UpdateGameSessionDto, GameSession> {
-        constructor(@InjectModel(GameSession) protected readonly model: typeof GameSession) {
-            super(model);
+        constructor(@InjectModel(GameSession) protected readonly gameSessionModel: typeof GameSession) {
+            super(gameSessionModel);
         }
 }

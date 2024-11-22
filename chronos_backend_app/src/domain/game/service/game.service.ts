@@ -10,7 +10,7 @@ import { UpdateGameDto } from '../dto/update_game_dto';
 @Injectable()
 export class GameService 
     extends SupportService<CreateGameDto, UpdateGameDto, Game> {
-        constructor(@InjectModel(Game) protected readonly model: typeof Game) {
-            super(model);
+        constructor(@InjectModel(Game) protected readonly gameModel: typeof Game) {
+            super(gameModel);
         }
 }

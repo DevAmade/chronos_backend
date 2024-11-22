@@ -1,3 +1,4 @@
+UniqueException
 Guard Non connecté, non admin
 Validation Pipe date futur, date passé, date avant autre date
 Test

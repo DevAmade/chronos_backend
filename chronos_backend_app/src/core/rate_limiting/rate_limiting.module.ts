@@ -2,12 +2,12 @@ import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { RateLimitingService } from './service/rate_limiting.service';
+import { RateLimitingConfigService } from './service/rate_limiting_config.service';
 
 @Module({
     imports: [
         ThrottlerModule.forRootAsync({
-            useClass: RateLimitingService,
+            useClass: RateLimitingConfigService,
         }),
     ],
     providers: [
