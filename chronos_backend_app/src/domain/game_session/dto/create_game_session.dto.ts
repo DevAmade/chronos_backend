@@ -19,7 +19,7 @@ export class CreateGameSessionDto {
     @IsNotEmpty()
     @Length(
         GAME_SESSION_NAME_MIN_LENGTH,
-        GAME_SESSION_NAME_MAX_LENGTH
+        GAME_SESSION_NAME_MAX_LENGTH,
     )
     @Matches(GAME_SESSION_NAME_REGEX)
     name: string;
@@ -35,7 +35,7 @@ export class CreateGameSessionDto {
     @IsOptional()
     @Length(
         GAME_SESSION_DESCRIPTION_MIN_LENGTH,
-        GAME_SESSION_DESCRIPTION_MAX_LENGTH
+        GAME_SESSION_DESCRIPTION_MAX_LENGTH,
     )
     description: string;
 

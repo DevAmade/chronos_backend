@@ -8,7 +8,7 @@ export class CreateAvatarDto {
     @IsNotEmpty()
     @Length(
         AVATAR_NAME_MIN_LENGTH,
-        AVATAR_NAME_MAX_LENGTH
+        AVATAR_NAME_MAX_LENGTH,
     )
     @Matches(AVATAR_NAME_REGEX)
     name: string;

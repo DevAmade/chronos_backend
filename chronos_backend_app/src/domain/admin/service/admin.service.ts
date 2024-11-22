@@ -45,7 +45,7 @@ export class AdminService
                 return {
                     token: await this.jwtService.signAsync(
                         payload, 
-                        { expiresIn: ADMIN_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_ADMIN') }
+                        { expiresIn: ADMIN_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_ADMIN') },
                     )
                 }
             } catch(err) {

@@ -3,7 +3,7 @@ import * as xss from 'xss';
 
 @Injectable()
 export class XSSPipe implements PipeTransform {
-    async transform(value: any, metadata: ArgumentMetadata) {
+    transform(value: any, metadata: ArgumentMetadata) {
         value = Object.keys(value).reduce((previousValue, currentValue) => {
             
             if(typeof value[currentValue] === 'string') {

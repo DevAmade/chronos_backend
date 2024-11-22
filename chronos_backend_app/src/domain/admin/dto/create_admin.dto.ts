@@ -22,7 +22,7 @@ export class CreateAdminDto {
     @IsNotEmpty()
     @Length(
         ADMIN_PSEUDO_MIN_LENGTH,
-        ADMIN_PSEUDO_MAX_LENGTH
+        ADMIN_PSEUDO_MAX_LENGTH,
     )
     @Matches(ADMIN_PSEUDO_REGEX)
     pseudo: string;

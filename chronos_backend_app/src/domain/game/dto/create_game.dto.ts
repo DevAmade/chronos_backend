@@ -13,7 +13,7 @@ export class CreateGameDto {
     @IsNotEmpty()
     @Length(
         GAME_NAME_MIN_LENGTH,
-        GAME_NAME_MAX_LENGTH
+        GAME_NAME_MAX_LENGTH,
     )
     @Matches(GAME_NAME_REGEX)
     name: string;
@@ -25,7 +25,7 @@ export class CreateGameDto {
     @IsNotEmpty()
     @Length(
         GAME_EDITOR_MIN_LENGTH,
-        GAME_EDITOR_MAX_LENGTH
+        GAME_EDITOR_MAX_LENGTH,
     )
     @Matches(GAME_EDITOR_REGEX)
     editor: string;
@@ -33,7 +33,7 @@ export class CreateGameDto {
     @IsOptional()
     @Length(
         GAME_DESCRIPTION_MIN_LENGTH,
-        GAME_DESCRIPTION_MAX_LENGTH
+        GAME_DESCRIPTION_MAX_LENGTH,
     )
     description: string;
 

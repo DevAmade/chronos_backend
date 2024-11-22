@@ -10,7 +10,7 @@ async function bootstrap() {
 
     app.setGlobalPrefix('api/chronos');
 
-    app.useGlobalPipes(new ValidationPipe())
+    app.useGlobalPipes(new ValidationPipe());
 
     await app.listen(configService.get('APP_PORT'));
 }

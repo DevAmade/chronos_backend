@@ -48,7 +48,7 @@ export class PlayerService
                 return {
                     token: await this.jwtService.signAsync(
                         payload, 
-                        { expiresIn: PLAYER_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_PLAYER') }
+                        { expiresIn: PLAYER_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_PLAYER') },
                     )
                 }
             } catch(err) {

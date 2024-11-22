@@ -9,8 +9,8 @@ export class DatabaseConfigService implements SequelizeOptionsFactory {
 
     constructor(private readonly configService: ConfigService) {}
 
-    createSequelizeOptions(): SequelizeModuleOptions {
-        return {
+    async createSequelizeOptions(): Promise<SequelizeModuleOptions> {
+        return Promise.resolve({
             dialect: this.configService.get('DATABASE_DIALECT'),
             host: this.configService.get('DATABASE_HOST'),
             port: +this.configService.get('DATABASE_PORT'),
@@ -19,6 +19,6 @@ export class DatabaseConfigService implements SequelizeOptionsFactory {
             database: this.configService.get('DATABASE_NAME'),
             autoLoadModels: true,
             logging: LOGGING_DATABASE,
-        }
+        });
     }
 }

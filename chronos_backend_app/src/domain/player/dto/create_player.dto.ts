@@ -29,7 +29,7 @@ export class CreatePlayerDto {
     @IsNotEmpty()
     @Length(
         PLAYER_PSEUDO_MIN_LENGTH,
-        PLAYER_PSEUDO_MAX_LENGTH
+        PLAYER_PSEUDO_MAX_LENGTH,
     )
     @Matches(PLAYER_PSEUDO_REGEX)
     pseudo: string;
@@ -37,7 +37,7 @@ export class CreatePlayerDto {
     @IsNotEmpty()
     @Length(
         PLAYER_FIRST_NAME_MIN_LENGTH,
-        PLAYER_FIRST_NAME_MAX_LENGTH
+        PLAYER_FIRST_NAME_MAX_LENGTH,
     )
     @Matches(PLAYER_FIRST_NAME_REGEX)
     firstName: string;
@@ -45,7 +45,7 @@ export class CreatePlayerDto {
     @IsNotEmpty()
     @Length(
         PLAYER_LAST_NAME_MIN_LENGTH,
-        PLAYER_LAST_NAME_MAX_LENGTH
+        PLAYER_LAST_NAME_MAX_LENGTH,
     )
     @Matches(PLAYER_LAST_NAME_REGEX)
     lastName: string;
