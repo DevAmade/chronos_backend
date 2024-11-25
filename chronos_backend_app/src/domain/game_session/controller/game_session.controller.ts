@@ -1,4 +1,6 @@
-import { Body, Controller, NotFoundException, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Inject, LoggerService, NotFoundException, Param, ParseUUIDPipe, Post, Put, Req } from '@nestjs/common';
+import { Request } from 'express';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
@@ -12,19 +14,30 @@ import { UpdateGameSessionDto } from '../dto/update_game_session.dto';
 @Controller('game_session')
 export class GameSessionController 
     extends SupportController<CreateGameSessionDto, UpdateGameSessionDto, GameSession> { 
-        constructor(protected readonly gameSessionService: GameSessionService) {
-            super(gameSessionService);
+        constructor(
+            protected readonly gameSessionService: GameSessionService,
+            @Inject(WINSTON_MODULE_NEST_PROVIDER) protected readonly loggerService: LoggerService,
+        ) {
+            super(gameSessionService, loggerService);
         }
 
         @Post()
-        async create(@Body(XSSPipe) data: CreateGameSessionDto): Promise<GameSession> {
-            return await this.gameSessionService.create(data);
+        async create(@Body(XSSPipe) data: CreateGameSessionDto, @Req() req: Request): Promise<GameSession> {
+            const createdGameSession = await this.gameSessionService.create(data);
+
+            this.loggerService.log(
+                `Game session created: { Client IP: ${req.ip}, Game session id: ${createdGameSession.id} }`,
+                'GameSessionController#create',
+            );
+
+            return createdGameSession;
         }
     
         @Put(':id')
         async update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body(XSSPipe) data: UpdateGameSessionDto,
+            @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingGameSession = await this.gameSessionService.findOneById(id);
 
@@ -32,6 +45,13 @@ export class GameSessionController
                 return new NotFoundException();
             }
 
-            return this.gameSessionService.update(id, data);
+            const updatedGameSession = await this.gameSessionService.update(id, data);
+
+            this.loggerService.log(
+                `Game session updated: { Client IP: ${req.ip}, Game session id: ${existingGameSession.id} }`,
+                'GameSessionController#update',
+            );
+
+            return updatedGameSession;
         }
 }

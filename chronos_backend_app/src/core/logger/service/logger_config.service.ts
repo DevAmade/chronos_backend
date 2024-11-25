@@ -13,8 +13,8 @@ import { ARCHIVED_LOG_FILE,
 export class LoggerConfigService implements WinstonModuleOptionsFactory {
     private logFormat = winston.format.combine(
         winston.format.timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS A' }),
-        winston.format.printf(({ message, timestamp, level }) => 
-            `${level.toUpperCase()} - ${timestamp} - ${message}`),
+        winston.format.printf(({ message, timestamp, level, ...meta }) => 
+            `${level.toUpperCase()} - ${timestamp} - [${meta.context}] - ${message}`),
     )
 
     async createWinstonModuleOptions(): Promise<WinstonModuleOptions> {

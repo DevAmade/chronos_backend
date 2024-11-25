@@ -1,4 +1,6 @@
-import { Body, Controller, NotFoundException, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Inject, LoggerService, NotFoundException, Param, ParseUUIDPipe, Post, Put, Req } from '@nestjs/common';
+import { Request } from 'express';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
@@ -12,25 +14,36 @@ import { UpdateAvatarDto } from '../dto/update_avatar.dto';
 @Controller('avatar')
 export class AvatarController 
     extends SupportController<CreateAvatarDto, UpdateAvatarDto, Avatar> { 
-        constructor(protected readonly avatarService: AvatarService) {
-            super(avatarService);
+        constructor(
+            protected readonly avatarService: AvatarService,
+            @Inject(WINSTON_MODULE_NEST_PROVIDER) protected readonly loggerService: LoggerService,
+        ) {
+            super(avatarService, loggerService);
         }
 
         @Post()
-        async create(@Body(XSSPipe) data: CreateAvatarDto): Promise<Avatar | Error> {
+        async create(@Body(XSSPipe) data: CreateAvatarDto, @Req() req: Request): Promise<Avatar | Error> {
             const existingDuplicate = await this.avatarService.findOneByAttribute([{ name: data.name }, { photo: data.photo }], 'or');
 
             if(existingDuplicate) {
                 return new NotFoundException(); //TODO Unique exception
             }
 
-            return await this.avatarService.create(data);
+            const createdAvatar = await this.avatarService.create(data);
+
+            this.loggerService.log(
+                `Avatar created: { Client IP: ${req.ip}, Avatar id: ${createdAvatar.id} }`,
+                'AvatarController#create',
+            );
+
+            return createdAvatar;
         }
     
         @Put(':id')
         async update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body(XSSPipe) data: UpdateAvatarDto,
+            @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingAvatar = await this.avatarService.findOneById(id);
             const existingDuplicate = await this.avatarService.findOneByAttribute([{ name: data.name }, { photo: data.photo }], 'or');
@@ -39,10 +52,17 @@ export class AvatarController
                 return new NotFoundException();
             }
 
-            if(existingDuplicate) {
+            if((existingAvatar.name !== data.name || existingAvatar.photo !== data.photo) && existingDuplicate) {
                 return new NotFoundException(); //TODO Unique exception
             }
 
-            return this.avatarService.update(id, data);
+            const updatedAvatar = await this.avatarService.update(id, data);
+
+            this.loggerService.log(
+                `Avatar updated: { Client IP: ${req.ip}, Avatar id: ${existingAvatar.id} }`,
+                'AvatarController#update',
+            );
+
+            return updatedAvatar;
         }
 }

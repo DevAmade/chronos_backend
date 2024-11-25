@@ -1,6 +1,8 @@
-import { Body, Controller, NotFoundException, Param, ParseUUIDPipe, Post, Put, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Inject, LoggerService, NotFoundException, Param, ParseUUIDPipe, Post, Put, Req, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 import * as bcrypt from 'bcrypt';
 
@@ -23,23 +25,39 @@ export class PlayerController
             protected readonly playerService: PlayerService,
             private readonly jwtService: JwtService,
             private readonly configService: ConfigService,
+            @Inject(WINSTON_MODULE_NEST_PROVIDER) protected readonly loggerService: LoggerService,
         ) {
-            super(playerService);
+            super(playerService, loggerService);
         }
 
         @Post('auth')
-        async authPlayer(@Body() data: AuthPlayerDto): Promise<{ token: string } | Error> {
+        async auth(@Body() data: AuthPlayerDto, @Req() req: Request): Promise<{ token: string } | Error> {
             const player = await this.playerService.findOneByAttribute([{ email: data.email }]);
     
             if(!player) {
+                this.loggerService.warn(
+                    `Failed connection: { Client IP: ${req.ip}, Used identifier: ${data.email} }`,
+                    'PlayerController#auth',
+                );
+
                 return new UnauthorizedException();
             }
 
             const isMatch = await bcrypt.compare(data.password, player.password);
 
             if(!isMatch) {
+                this.loggerService.warn(
+                    `Failed connection: { Client IP: ${req.ip}, Player id: ${player.id} }`,
+                    'PlayerController#auth',
+                );
+
                 return new UnauthorizedException();
             }
+
+            this.loggerService.log(
+                `Successful connection: { Client IP: ${req.ip}, Player id: ${player.id} }`,
+                'PlayerController#auth',
+            );
 
             const payload = { 
                 id: player.id,
@@ -58,20 +76,28 @@ export class PlayerController
         }
 
         @Post()
-        async create(@Body(HashPasswordPipe, XSSPipe) data: CreatePlayerDto): Promise<Player | Error> {
+        async create(@Body(HashPasswordPipe, XSSPipe) data: CreatePlayerDto, @Req() req: Request): Promise<Player | Error> {
             const existingDuplicate = await this.playerService.findOneByAttribute([{ email: data.email }, { pseudo: data.pseudo }], 'or');
 
             if(existingDuplicate) {
                 return new NotFoundException(); //TODO Unique exception
             }
 
-            return await this.playerService.create(data);
+            const createdPlayer = await this.playerService.create(data);
+
+            this.loggerService.log(
+                `Player created: { Client IP: ${req.ip}, Player id: ${createdPlayer.id} }`,
+                'PlayerController#create',
+            );
+
+            return createdPlayer;
         }
     
         @Put(':id')
         async update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body(HashPasswordPipe, XSSPipe) data: UpdatePlayerDto,
+            @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingPlayer = await this.playerService.findOneById(id);
             const existingDuplicate = await this.playerService.findOneByAttribute([{ email: data.email }, { pseudo: data.pseudo }], 'or');
@@ -80,10 +106,17 @@ export class PlayerController
                 return new NotFoundException();
             }
 
-            if(existingDuplicate) {
+            if((existingPlayer.email !== data.email || existingPlayer.pseudo !== data.pseudo) && existingDuplicate) {
                 return new NotFoundException(); //TODO Unique exception
             }
 
-            return this.playerService.update(id, data);
+            const updatedPlayer = await this.playerService.update(id, data);
+
+            this.loggerService.log(
+                `Player updated: { Client IP: ${req.ip}, Player id: ${existingPlayer.id} }`,
+                'PlayerController#update',
+            );
+
+            return updatedPlayer;
         }
 }

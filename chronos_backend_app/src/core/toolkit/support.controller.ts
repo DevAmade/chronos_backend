@@ -1,4 +1,5 @@
-import { Delete, Get, NotFoundException, Param, ParseUUIDPipe } from '@nestjs/common';
+import { Delete, Get, LoggerService, NotFoundException, Param, ParseUUIDPipe, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { Model } from 'sequelize-typescript';
 import { UUID } from 'node:crypto';
 
@@ -6,7 +7,10 @@ import { SupportService } from './support.service';
 
 export abstract class SupportController<C, U, M extends Model> {
 
-    constructor(protected readonly service: SupportService<C, U, M>) {}
+    constructor(
+        protected readonly service: SupportService<C, U, M>,
+        protected readonly loggerService: LoggerService,
+    ) {}
 
     @Get(':id')
     async findOneById(@Param('id', ParseUUIDPipe) id: UUID): Promise<M | Error> {
@@ -25,11 +29,16 @@ export abstract class SupportController<C, U, M extends Model> {
     }
 
     @Delete(':id')
-    async delete(@Param('id', ParseUUIDPipe) id: UUID): Promise<void | Error> {
+    async delete(@Param('id', ParseUUIDPipe) id: UUID, @Req() req: Request): Promise<void | Error> {
         const deleteModel = await this.service.delete(id);
 
         if(deleteModel === null) {
             return new NotFoundException();
         }
+
+        this.loggerService.log(
+            `Item deleted: { Client IP: ${req.ip}, Item id: ${deleteModel.id} }`,
+            'SupportController#delete',
+        );
     }
 }

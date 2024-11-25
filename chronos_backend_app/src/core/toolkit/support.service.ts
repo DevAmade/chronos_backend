@@ -19,7 +19,7 @@ export abstract class SupportService<C, U, M extends Model> {
 
         if(!operator) {
             options = { 
-                where: { findOptions },
+                where: findOptions,
             }
         }
 
@@ -36,6 +36,27 @@ export abstract class SupportService<C, U, M extends Model> {
         return await this.model.findAll();
     }
 
+    async findManyByAttribute(
+        findOptions: { [attribute: string]: any }[],
+        operator?: 'or',
+    ): Promise<M[]> {
+        let options: FindOptions;
+
+        if(!operator) {
+            options = { 
+                where: findOptions,
+            }
+        }
+
+        if(operator === 'or') {
+            options = { 
+                where: { [Op.or]: findOptions },
+            }
+        }
+
+        return await this.model.findAll(options);
+    }
+
     async create(data: C): Promise<M> {
         return await this.model.create(data as any); 
     }
@@ -47,7 +68,7 @@ export abstract class SupportService<C, U, M extends Model> {
         return updateModel;
     }
 
-    async delete(id: UUID): Promise<void | null> {
+    async delete(id: UUID): Promise<M> {
         const deleteModel = await this.findOneById(id);
 
         if(!deleteModel) {
@@ -55,5 +76,7 @@ export abstract class SupportService<C, U, M extends Model> {
         }
 
         await deleteModel.destroy();
+
+        return deleteModel;
     }
 }

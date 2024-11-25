@@ -1,6 +1,8 @@
-import { Body, Controller, NotFoundException, Param, ParseUUIDPipe, Post, Put, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Inject, LoggerService, NotFoundException, Param, ParseUUIDPipe, Post, Put, Req, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 import * as bcrypt from 'bcrypt';
 
@@ -23,23 +25,39 @@ export class AdminController
             protected readonly adminService: AdminService,
             private readonly jwtService: JwtService,
             private readonly configService: ConfigService,
+            @Inject(WINSTON_MODULE_NEST_PROVIDER) protected readonly loggerService: LoggerService,
         ) {
-            super(adminService);
+            super(adminService, loggerService);
         }
 
         @Post('auth')
-        async authAdmin(data: AuthAdminDto): Promise<{ token: string } | Error> {
+        async authAdmin(data: AuthAdminDto, @Req() req: Request): Promise<{ token: string } | Error> {
             const admin = await this.adminService.findOneByAttribute([{ email: data.pseudo }]);
 
             if(!admin) {
+                this.loggerService.warn(
+                    `Failed connection: { Client IP: ${req.ip}, Used identifier: ${data.pseudo} }`,
+                    'AdminController#auth',
+                );
+
                 return new UnauthorizedException();
             }
 
             const isMatch = await bcrypt.compare(data.password, admin.password);
 
             if(!isMatch) {
+                this.loggerService.warn(
+                    `Failed connection: { Client IP: ${req.ip}, Admin id: ${admin.id} }`,
+                    'AdminController#auth',
+                );
+
                 return new UnauthorizedException();
             }
+
+            this.loggerService.log(
+                `Successful connection: { Client IP: ${req.ip}, Admin id: ${admin.id} }`,
+                'AdminController#auth',
+            );
 
             const payload = {
                 id: admin.id,
@@ -55,20 +73,28 @@ export class AdminController
         }
 
         @Post()
-        async create(@Body(HashPasswordPipe, XSSPipe) data: CreateAdminDto): Promise<Admin | Error> {
+        async create(@Body(HashPasswordPipe, XSSPipe) data: CreateAdminDto, @Req() req: Request): Promise<Admin | Error> {
             const existingDuplicate = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
 
             if(existingDuplicate) {
                 return new NotFoundException(); //TODO Unique exception
             }
 
-            return await this.adminService.create(data);
+            const createdAdmin = await this.adminService.create(data);
+
+            this.loggerService.log(
+                `Admin created: { Client IP: ${req.ip}, Admin id: ${createdAdmin.id} }`,
+                'AdminController#create',
+            );
+
+            return createdAdmin;
         }
     
         @Put(':id')
         async update(
             @Param('id', ParseUUIDPipe) id: UUID,
             @Body(HashPasswordPipe, XSSPipe) data: UpdateAdminDto,
+            @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingAdmin = await this.adminService.findOneById(id);
             const existingDuplicate = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
@@ -77,10 +103,17 @@ export class AdminController
                 return new NotFoundException();
             }
 
-            if(existingDuplicate) {
+            if(existingAdmin.pseudo !== data.pseudo && existingDuplicate) {
                 return new NotFoundException(); //TODO Unique exception
             }
 
-            return this.adminService.update(id, data);
+            const updatedAdmin = await this.adminService.update(id, data);
+
+            this.loggerService.log(
+                `Admin updated: { Client IP: ${req.ip}, Admin id: ${existingAdmin.id} }`,
+                'AdminController#update',
+            );
+
+            return updatedAdmin;
         }
 }
