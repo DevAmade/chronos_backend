@@ -10,7 +10,7 @@ import { SupportController } from '../../../core/toolkit/support.controller';
 import { HashPasswordPipe } from '../../../core/pipe/hash_password.pipe';
 import { XSSPipe } from '../../../core/pipe/xss.pipe';
 
-import { ADMIN_JWT_TOKEN_EXPIRATION } from 'src/domain/config/module.config';
+import { ADMIN_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Admin } from '../model/admin.model';
 import { AdminService } from '../service/admin.service';
 import { CreateAdminDto } from '../dto/create_admin.dto';
