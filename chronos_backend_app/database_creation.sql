@@ -10,21 +10,18 @@ CREATE DATABASE chronos_database;
 -- Création de la table "game media"
 CREATE TABLE game_media (
     id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
     photo BYTEA NOT NULL
 );
 
 -- Création de la table "player media"
 CREATE TABLE player_media (
     id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
     photo BYTEA NOT NULL
 );
 
 -- Création de la table "admin media"
 CREATE TABLE admin_media (
     id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
     photo BYTEA NOT NULL
 );
 
