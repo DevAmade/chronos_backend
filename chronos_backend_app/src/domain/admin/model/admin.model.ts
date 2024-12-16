@@ -22,12 +22,6 @@ export class Admin extends Model {
     avatarId: UUID;
 
     @Column({
-        field: 'avatar_custom',
-        type: DataType.BLOB,
-    })
-    avatarCustom: Buffer;
-
-    @Column({
         type: DataType.STRING,
         unique: true,
         allowNull: false,

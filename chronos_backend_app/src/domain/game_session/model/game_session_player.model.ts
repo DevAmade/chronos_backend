@@ -18,9 +18,9 @@ export class GameSessionPlayer extends Model {
     @PrimaryKey
     @ForeignKey(() => Player)
     @Column({
-        field: 'game_session_player_id',
+        field: 'player_id',
         type: DataType.UUID,
         allowNull: false,
     })
-    gameSessionPlayerId: UUID;
+    playerId: UUID;
 }

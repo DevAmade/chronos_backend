@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { SupportController } from '../../../core/toolkit/support.controller';
 import { HashPasswordPipe } from '../../../core/pipe/hash_password.pipe';
 import { XSSPipe } from '../../../core/pipe/xss.pipe';
+import { UniqueException } from '../../../core/exception/unique_exception';
 
 import { ADMIN_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Admin } from '../model/admin.model';
@@ -32,7 +33,7 @@ export class AdminController
 
         @Post('auth')
         async authAdmin(data: AuthAdminDto, @Req() req: Request): Promise<{ token: string } | Error> {
-            const admin = await this.adminService.findOneByAttribute([{ email: data.pseudo }]);
+            const admin = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
 
             if(!admin) {
                 this.loggerService.warn(
@@ -40,7 +41,7 @@ export class AdminController
                     'AdminController#auth',
                 );
 
-                return new UnauthorizedException();
+                throw new UnauthorizedException();
             }
 
             const isMatch = await bcrypt.compare(data.password, admin.password);
@@ -51,7 +52,7 @@ export class AdminController
                     'AdminController#auth',
                 );
 
-                return new UnauthorizedException();
+                throw new UnauthorizedException();
             }
 
             this.loggerService.log(
@@ -77,7 +78,7 @@ export class AdminController
             const existingDuplicate = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
 
             if(existingDuplicate) {
-                return new NotFoundException(); //TODO Unique exception
+                throw new UniqueException();
             }
 
             const createdAdmin = await this.adminService.create(data);
@@ -100,11 +101,11 @@ export class AdminController
             const existingDuplicate = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
 
             if(!existingAdmin) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             if(existingAdmin.pseudo !== data.pseudo && existingDuplicate) {
-                return new NotFoundException(); //TODO Unique exception
+                throw new UniqueException();
             }
 
             const updatedAdmin = await this.adminService.update(id, data);

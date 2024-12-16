@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { SupportController } from '../../../core/toolkit/support.controller';
 import { HashPasswordPipe } from '../../../core/pipe/hash_password.pipe';
 import { XSSPipe } from '../../../core/pipe/xss.pipe';
+import { UniqueException } from '../../../core/exception/unique_exception';
 
 import { PLAYER_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Player } from '../model/player.model';
@@ -40,7 +41,7 @@ export class PlayerController
                     'PlayerController#auth',
                 );
 
-                return new UnauthorizedException();
+                throw new UnauthorizedException();
             }
 
             const isMatch = await bcrypt.compare(data.password, player.password);
@@ -51,7 +52,7 @@ export class PlayerController
                     'PlayerController#auth',
                 );
 
-                return new UnauthorizedException();
+                throw new UnauthorizedException();
             }
 
             this.loggerService.log(
@@ -80,7 +81,7 @@ export class PlayerController
             const existingDuplicate = await this.playerService.findOneByAttribute([{ email: data.email }, { pseudo: data.pseudo }], 'or');
 
             if(existingDuplicate) {
-                return new NotFoundException(); //TODO Unique exception
+                throw new UniqueException();
             }
 
             const createdPlayer = await this.playerService.create(data);
@@ -103,11 +104,11 @@ export class PlayerController
             const existingDuplicate = await this.playerService.findOneByAttribute([{ email: data.email }, { pseudo: data.pseudo }], 'or');
 
             if(!existingPlayer) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             if((existingPlayer.email !== data.email || existingPlayer.pseudo !== data.pseudo) && existingDuplicate) {
-                return new NotFoundException(); //TODO Unique exception
+                throw new UniqueException();
             }
 
             const updatedPlayer = await this.playerService.update(id, data);

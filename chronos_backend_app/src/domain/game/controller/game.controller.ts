@@ -5,6 +5,7 @@ import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
 import { XSSPipe } from '../../../core/pipe/xss.pipe';
+import { UniqueException } from '../../../core/exception/unique_exception';
 
 import { Game } from '../model/game.model';
 import { GameService } from '../service/game.service';
@@ -23,10 +24,10 @@ export class GameController
 
         @Post()
         async create(@Body(XSSPipe) data: CreateGameDto, @Req() req: Request): Promise<Game | Error> {
-            const existingDuplicate = await this.gameService.findOneByAttribute([{ name: data.name }, { cover_photo: data.coverPhoto }], 'or');
+            const existingDuplicate = await this.gameService.findOneByAttribute([{ name: data.name }]);
 
             if(existingDuplicate) {
-                return new NotFoundException(); //TODO Unique exception
+                throw new UniqueException();
             }
 
             const createdGame = await this.gameService.create(data);
@@ -46,14 +47,14 @@ export class GameController
             @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingGame = await this.gameService.findOneById(id);
-            const existingDuplicate = await this.gameService.findOneByAttribute([{ name: data.name }, { cover_photo: data.coverPhoto }], 'or');
+            const existingDuplicate = await this.gameService.findOneByAttribute([{ name: data.name }]);
 
             if(!existingGame) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
-            if((existingGame.name !== data.name || existingGame.coverPhoto !== data.coverPhoto) && existingDuplicate) {
-                return new NotFoundException(); //TODO Unique exception
+            if(existingGame.name !== data.name && existingDuplicate) {
+                throw new UniqueException();
             }
 
             const updatedGame = await this.gameService.update(id, data);

@@ -15,5 +15,8 @@ import { GameService } from './service/game.service';
     providers: [
         GameService,
     ],
+    exports: [
+        GameService,
+    ],
 })
 export class GameModule {}

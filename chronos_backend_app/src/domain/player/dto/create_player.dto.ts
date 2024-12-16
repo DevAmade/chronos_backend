@@ -1,7 +1,6 @@
 import { UUID } from "node:crypto";
-import { IsBase64, IsDateString, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
+import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
 
-import { CountryCodeEnum } from "../validation/country_code.enum";
 import { PLAYER_PASSWORD_MIN_LENGTH,
          PLAYER_PASSWORD_MIN_LOWERCASE,
          PLAYER_PASSWORD_MIN_NUMBERS,
@@ -21,10 +20,6 @@ export class CreatePlayerDto {
     @IsOptional()
     @IsUUID()
     avatarId: UUID;
-
-    @IsOptional()
-    @IsBase64()
-    avatarCustom: Buffer;
 
     @IsNotEmpty()
     @Length(
@@ -54,7 +49,7 @@ export class CreatePlayerDto {
     @IsDateString()
     birthdate: Date;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsPhoneNumber()
     phoneNumber: string;
 
@@ -71,8 +66,4 @@ export class CreatePlayerDto {
         minSymbols: PLAYER_PASSWORD_MIN_SYMBOLS,
     })
     password: string;
-
-    @IsNotEmpty()
-    @IsEnum(CountryCodeEnum)
-    country: CountryCodeEnum;
 }

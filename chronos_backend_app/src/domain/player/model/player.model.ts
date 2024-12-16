@@ -23,12 +23,6 @@ export class Player extends Model {
     avatarId: UUID;
 
     @Column({
-        field: 'avatar_custom',
-        type: DataType.BLOB,
-    })
-    avatarCustom: Buffer;
-
-    @Column({
         type: DataType.STRING,
         unique: true,
         allowNull: false,
@@ -67,7 +61,6 @@ export class Player extends Model {
     @Column({
         field: 'phone_number',
         type: DataType.STRING,
-        allowNull: false,
     })
     phoneNumber: string;
 
@@ -83,12 +76,6 @@ export class Player extends Model {
         allowNull: false,
     })
     password: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: false,
-    })
-    country: string;
 
     @Column({
         type: DataType.BOOLEAN,

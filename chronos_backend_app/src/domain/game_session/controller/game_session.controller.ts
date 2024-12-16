@@ -42,7 +42,7 @@ export class GameSessionController
             const existingGameSession = await this.gameSessionService.findOneById(id);
 
             if(!existingGameSession) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             const updatedGameSession = await this.gameSessionService.update(id, data);

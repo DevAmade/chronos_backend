@@ -17,7 +17,7 @@ export abstract class SupportController<C, U, M extends Model> {
         const findModel = await this.service.findOneById(id);
 
         if(!findModel) {
-            return new NotFoundException();
+            throw new NotFoundException();
         }
 
         return findModel;
@@ -33,7 +33,7 @@ export abstract class SupportController<C, U, M extends Model> {
         const deleteModel = await this.service.delete(id);
 
         if(deleteModel === null) {
-            return new NotFoundException();
+            throw new NotFoundException();
         }
 
         this.loggerService.log(

@@ -5,6 +5,7 @@ import { PlayerModule } from './player/player.module';
 import { GameModule } from './game/game.module';
 import { GameSessionModule } from './game_session/game_session.module';
 import { AvatarModule } from './avatar/avatar.module';
+import { EditorModule } from './editor/editor.module';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { AvatarModule } from './avatar/avatar.module';
         GameModule,
         GameSessionModule,
         AvatarModule,
+        EditorModule,
     ],
 })
 export class DomainModule {}

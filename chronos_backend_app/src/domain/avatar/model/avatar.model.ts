@@ -21,7 +21,6 @@ export class Avatar extends Model {
 
     @Column({
         type: DataType.BLOB,
-        unique: true,
         allowNull: false,
     })
     photo: Buffer;

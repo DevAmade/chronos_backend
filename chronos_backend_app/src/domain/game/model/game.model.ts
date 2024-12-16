@@ -20,13 +20,6 @@ export class Game extends Model {
     name: string;
 
     @Column({
-        field: 'cover_photo',
-        type: DataType.BLOB,
-        unique: true,
-    })
-    coverPhoto: Buffer;
-
-    @Column({
         type: DataType.STRING,
         allowNull: false,
     })

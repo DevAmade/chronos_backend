@@ -1,4 +1,4 @@
-import { IsBase64, IsNotEmpty, IsOptional, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
+import { IsNotEmpty, IsOptional, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
 import { UUID } from "node:crypto";
 
 import { ADMIN_PASSWORD_MIN_LENGTH,
@@ -14,10 +14,6 @@ export class CreateAdminDto {
     @IsOptional()
     @IsUUID()
     avatarId: UUID;
-
-    @IsOptional()
-    @IsBase64()
-    avatarCustom: Buffer;
 
     @IsNotEmpty()
     @Length(

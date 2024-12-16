@@ -1,4 +1,4 @@
-import { IsBase64, IsNotEmpty, IsNumber, IsOptional, Length, Matches } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, Length, Matches } from "class-validator";
 
 import { GAME_DESCRIPTION_MAX_LENGTH,
          GAME_DESCRIPTION_MIN_LENGTH,
@@ -17,10 +17,6 @@ export class CreateGameDto {
     )
     @Matches(GAME_NAME_REGEX)
     name: string;
-
-    @IsOptional()
-    @IsBase64()
-    coverPhoto: Buffer;
 
     @IsNotEmpty()
     @Length(
