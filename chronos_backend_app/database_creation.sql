@@ -25,6 +25,12 @@ CREATE TABLE game (
     PEGI INT NOT NULL
 );
 
+-- Création de la table "editor"
+CREATE TABLE editor (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
 -- Création de la table "player"
 CREATE TABLE player (
     id UUID PRIMARY KEY,
@@ -34,10 +40,9 @@ CREATE TABLE player (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     birthdate DATE NOT NULL,
-    phone_number VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    country VARCHAR(255) NOT NULL,
     banned BOOLEAN NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
