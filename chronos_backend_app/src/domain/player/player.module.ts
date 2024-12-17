@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { JwtModule } from '@nestjs/jwt';
 
-import { GameModule } from '../game/game.module';
+import { PlayerGuard } from '../guard/player.guard';
+import { AdminGuard } from '../guard/admin.guard';
 import { Player } from './model/player.model';
 import { FavoritePlayer } from './model/favorite_player.model';
 import { GameOwned } from './model/game_owned.model';
@@ -17,7 +18,6 @@ import { GameOwnedService } from './service/game_owned.service';
     imports: [
         SequelizeModule.forFeature([Player, FavoritePlayer, GameOwned]),
         JwtModule,
-        GameModule,
     ],
     controllers: [
         PlayerController,
@@ -28,6 +28,8 @@ import { GameOwnedService } from './service/game_owned.service';
         PlayerService,
         FavoritePlayerService,
         GameOwnedService,
+        PlayerGuard,
+        AdminGuard,
     ],
     exports: [
         PlayerService,

@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, LoggerService, NotFoundException, Param, ParseUUIDPipe, Post, Put, Req, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, LoggerService, NotFoundException, Param, ParseUUIDPipe, Post, Put, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -6,10 +6,10 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 import * as bcrypt from 'bcrypt';
 
-import { SupportController } from '../../../core/toolkit/support.controller';
 import { HashPasswordPipe } from '../../../core/toolkit/pipe/hash_password.pipe';
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
+import { AdminGuard } from '../../guard/admin.guard';
 import { ADMIN_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Admin } from '../model/admin.model';
 import { AdminService } from '../service/admin.service';
@@ -18,91 +18,124 @@ import { UpdateAdminDto } from '../dto/update_admin.dto';
 import { AuthAdminDto } from '../dto/auth_admin.dto';
 
 @Controller('admin')
-export class AdminController 
-    extends SupportController<CreateAdminDto, UpdateAdminDto, Admin> {
+export class AdminController {
         
-        constructor(
-            protected readonly adminService: AdminService,
-            private readonly jwtService: JwtService,
-            private readonly configService: ConfigService,
-            @Inject(WINSTON_MODULE_NEST_PROVIDER) protected readonly loggerService: LoggerService,
-        ) {
-            super(adminService, loggerService);
-        }
+    constructor(
+        private readonly adminService: AdminService,
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService,
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly loggerService: LoggerService,
+    ) {}
 
-        @Post('auth')
-        async authAdmin(data: AuthAdminDto, @Req() req: Request): Promise<{ token: string } | Error> {
-            const admin = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
+    @Post('auth')
+    async authAdmin(@Body() data: AuthAdminDto, @Req() req: Request): Promise<{ token: string } | Error> {
+        const admin = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
 
-            if(!admin) {
-                this.loggerService.warn(
-                    `Failed connection: { Client IP: ${req.ip}, Used identifier: ${data.pseudo} }`,
-                    'AdminController#auth',
-                );
-
-                throw new UnauthorizedException();
-            }
-
-            const isMatch = await bcrypt.compare(data.password, admin.password);
-
-            if(!isMatch) {
-                this.loggerService.warn(
-                    `Failed connection: { Client IP: ${req.ip}, Admin id: ${admin.id} }`,
-                    'AdminController#auth',
-                );
-
-                throw new UnauthorizedException();
-            }
-
-            this.loggerService.log(
-                `Successful connection: { Client IP: ${req.ip}, Admin id: ${admin.id} }`,
+        if(!admin) {
+            this.loggerService.warn(
+                `Failed connection: { Client IP: ${req.ip}, Used identifier: ${data.pseudo} }`,
                 'AdminController#auth',
             );
 
-            const payload = {
-                id: admin.id,
-                pseudo: admin.pseudo,
-            };
-
-            return {
-                token: await this.jwtService.signAsync(
-                    payload, 
-                    { expiresIn: ADMIN_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_ADMIN') },
-                )
-            }
+            throw new UnauthorizedException();
         }
 
-        @Post()
-        async create(@Body(HashPasswordPipe, XSSPipe) data: CreateAdminDto, @Req() req: Request): Promise<Admin | Error> {
-            const createdAdmin = await this.adminService.create(data);
+        const isMatch = await bcrypt.compare(data.password, admin.password);
 
-            this.loggerService.log(
-                `Admin created: { Client IP: ${req.ip}, Admin id: ${createdAdmin.id} }`,
-                'AdminController#create',
+        if(!isMatch) {
+            this.loggerService.warn(
+                `Failed connection: { Client IP: ${req.ip}, Admin id: ${admin.id} }`,
+                'AdminController#auth',
             );
 
-            return createdAdmin;
+            throw new UnauthorizedException();
         }
-    
-        @Put(':id')
-        async update(
-            @Param('id', ParseUUIDPipe) id: UUID,
-            @Body(HashPasswordPipe, XSSPipe) data: UpdateAdminDto,
-            @Req() req: Request,
-        ): Promise<[affectedCount: number] | Error> {
-            const existingAdmin = await this.adminService.findOneById(id);
 
-            if(!existingAdmin) {
-                throw new NotFoundException();
-            }
+        this.loggerService.log(
+            `Successful connection: { Client IP: ${req.ip}, Admin id: ${admin.id} }`,
+            'AdminController#auth',
+        );
 
-            const updatedAdmin = await this.adminService.update(id, data);
+        const payload = {
+            id: admin.id,
+            pseudo: admin.pseudo,
+            admin: true,
+        };
 
-            this.loggerService.log(
-                `Admin updated: { Client IP: ${req.ip}, Admin id: ${existingAdmin.id} }`,
-                'AdminController#update',
-            );
-
-            return updatedAdmin;
+        return {
+            token: await this.jwtService.signAsync(
+                payload, 
+                { expiresIn: ADMIN_JWT_TOKEN_EXPIRATION, secret: this.configService.get('JWT_KEY_ADMIN') },
+            )
         }
+    }
+
+    @Post()
+    @UseGuards(AdminGuard)
+    async create(@Body(HashPasswordPipe, XSSPipe) data: CreateAdminDto, @Req() req: Request): Promise<Admin | Error> {
+        const createdAdmin = await this.adminService.create(data);
+
+        this.loggerService.log(
+            `Admin created: { Client IP: ${req.ip}, Admin id: ${createdAdmin.id} }`,
+            'AdminController#create',
+        );
+
+        return createdAdmin;
+    }
+
+    @Put(':id')
+    @UseGuards(AdminGuard)
+    async update(
+        @Param('id', ParseUUIDPipe) id: UUID,
+        @Body(HashPasswordPipe, XSSPipe) data: UpdateAdminDto,
+        @Req() req: Request,
+    ): Promise<[affectedCount: number] | Error> {
+        const existingAdmin = await this.adminService.findOneById(id);
+
+        if(!existingAdmin) {
+            throw new NotFoundException();
+        }
+
+        const updatedAdmin = await this.adminService.update(id, data);
+
+        this.loggerService.log(
+            `Admin updated: { Client IP: ${req.ip}, Admin id: ${existingAdmin.id} }`,
+            'AdminController#update',
+        );
+
+        return updatedAdmin;
+    }
+
+    @Get(':id')
+    @UseGuards(AdminGuard)
+    async findOneById(@Param('id', ParseUUIDPipe) id: UUID): Promise<Admin | Error> {
+        const findAdmin = await this.adminService.findOneById(id);
+
+        if(!findAdmin) {
+            throw new NotFoundException();
+        }
+
+        return findAdmin;
+    }
+
+    @Get()
+    @UseGuards(AdminGuard)
+    findAll(): Promise<Admin[]> {
+        return this.adminService.findAll();
+    }
+
+    @Delete(':id')
+    @UseGuards(AdminGuard)
+    async delete(@Param('id', ParseUUIDPipe) id: UUID, @Req() req: Request): Promise<void | Error> {
+        const deleteAdmin = await this.adminService.delete(id);
+
+        if(deleteAdmin === null) {
+            throw new NotFoundException();
+        }
+
+        this.loggerService.log(
+            `Admin deleted: { Client IP: ${req.ip}, Admin id: ${deleteAdmin.id} }`,
+            'AdminController#delete',
+        );
+    }
 }

@@ -1,14 +1,14 @@
-import { Body, Controller, Delete, NotFoundException, Post } from '@nestjs/common';
+import { Body, Controller, Delete, NotFoundException, Post, UseGuards } from '@nestjs/common';
 
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
-import { GameService } from '../../game/service/game.service';
+import { AuthGuard } from '../../guard/auth.guard';
 import { GameOwned } from '../model/game_owned.model';
-import { PlayerService } from '../service/player.service';
 import { GameOwnedService } from '../service/game_owned.service';
 import { GameOwnedDto } from '../dto/game_owned.dto';
 
 @Controller('game_owned')
+@UseGuards(AuthGuard)
 export class GameOwnedController  {
 
     constructor(private readonly gameOwnedService: GameOwnedService) {}

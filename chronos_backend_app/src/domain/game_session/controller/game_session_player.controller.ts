@@ -1,12 +1,14 @@
-import { Body, Controller, Delete, NotFoundException, Post } from '@nestjs/common';
+import { Body, Controller, Delete, NotFoundException, Post, UseGuards } from '@nestjs/common';
 
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
+import { AuthGuard } from '../../guard/auth.guard';
 import { GameSessionPlayer } from '../model/game_session_player.model';
 import { GameSessionPlayerService } from '../service/game_session_player.service';
 import { GameSessionPlayerDto } from '../dto/game_session_player.dto';
 
 @Controller('game_session_player')
+@UseGuards(AuthGuard)
 export class GameSessionPlayerController  {
 
     constructor(private readonly gameSessionPlayerService: GameSessionPlayerService) {}
