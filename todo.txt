@@ -1,7 +1,7 @@
 Gerer table media,
+Guard Non connecté, non admin
 Gerer la prise en charge de photo,
 Voir pour créer automatiquement BDD avec sequilize
-Guard Non connecté, non admin
 Validation Pipe date futur, date passé, date avant autre date
 Test
 Docker

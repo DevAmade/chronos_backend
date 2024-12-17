@@ -14,7 +14,8 @@ import { PLAYER_PASSWORD_MIN_LENGTH,
          PLAYER_FIRST_NAME_MAX_LENGTH,
          PLAYER_LAST_NAME_REGEX,
          PLAYER_LAST_NAME_MAX_LENGTH,
-         PLAYER_LAST_NAME_MIN_LENGTH } from "../validation/validation.config";
+         PLAYER_LAST_NAME_MIN_LENGTH, 
+         PLAYER_PHONE_NUMBER_COUNTRY_CODE } from "../validation/validation.config";
 
 export class CreatePlayerDto {
     @IsOptional()
@@ -50,7 +51,7 @@ export class CreatePlayerDto {
     birthdate: Date;
 
     @IsOptional()
-    @IsPhoneNumber()
+    @IsPhoneNumber(PLAYER_PHONE_NUMBER_COUNTRY_CODE)
     phoneNumber: string;
 
     @IsNotEmpty()

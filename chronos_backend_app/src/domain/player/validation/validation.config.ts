@@ -20,6 +20,11 @@ export const PLAYER_FIRST_NAME_MAX_LENGTH = Infinity;
 export const PLAYER_FIRST_NAME_REGEX = '^[a-zA-Z]+$';
 
 /*
+* Player phone number configuration
+*/
+export const PLAYER_PHONE_NUMBER_COUNTRY_CODE = 'FR';
+
+/*
 * Player password configuration
 */
 export const PLAYER_PASSWORD_MIN_LENGTH = 12;

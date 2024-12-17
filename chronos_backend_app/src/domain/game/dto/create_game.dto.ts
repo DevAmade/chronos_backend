@@ -1,15 +1,17 @@
-import { IsNotEmpty, IsNumber, IsOptional, Length, Matches } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsUUID, Length, Matches } from "class-validator";
+import { UUID } from "node:crypto";
 
 import { GAME_DESCRIPTION_MAX_LENGTH,
          GAME_DESCRIPTION_MIN_LENGTH,
-         GAME_EDITOR_MAX_LENGTH,
-         GAME_EDITOR_MIN_LENGTH,
-         GAME_EDITOR_REGEX, 
          GAME_NAME_MAX_LENGTH, 
          GAME_NAME_MIN_LENGTH,
          GAME_NAME_REGEX } from "../validation/validation.config";
 
 export class CreateGameDto {
+    @IsNotEmpty()
+    @IsUUID()
+    editor_id: UUID;
+    
     @IsNotEmpty()
     @Length(
         GAME_NAME_MIN_LENGTH,
@@ -17,14 +19,6 @@ export class CreateGameDto {
     )
     @Matches(GAME_NAME_REGEX)
     name: string;
-
-    @IsNotEmpty()
-    @Length(
-        GAME_EDITOR_MIN_LENGTH,
-        GAME_EDITOR_MAX_LENGTH,
-    )
-    @Matches(GAME_EDITOR_REGEX)
-    editor: string;
 
     @IsOptional()
     @Length(

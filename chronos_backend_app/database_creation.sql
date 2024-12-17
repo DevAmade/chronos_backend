@@ -14,21 +14,24 @@ CREATE TABLE avatar (
     photo BYTEA NOT NULL
 );
 
--- Création de la table "game"
-CREATE TABLE game (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    editor VARCHAR(255) NOT NULL,
-    description VARCHAR(255),
-    min_number_players INT NOT NULL,
-    max_number_players INT NOT NULL,
-    PEGI INT NOT NULL
-);
-
 -- Création de la table "editor"
 CREATE TABLE editor (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Création de la table "game"
+CREATE TABLE game (
+    id UUID PRIMARY KEY,
+    editor_id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    min_number_players INT NOT NULL,
+    max_number_players INT NOT NULL,
+    PEGI INT NOT NULL,
+    CONSTRAINT fk_editor
+        FOREIGN KEY (editor_id)
+        REFERENCES editor(id)
 );
 
 -- Création de la table "player"
