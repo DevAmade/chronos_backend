@@ -28,7 +28,7 @@ CREATE TABLE game (
     description VARCHAR(255),
     min_number_players INT NOT NULL,
     max_number_players INT NOT NULL,
-    PEGI INT NOT NULL,
+    pegi INT NOT NULL,
     CONSTRAINT fk_editor
         FOREIGN KEY (editor_id)
         REFERENCES editor(id)

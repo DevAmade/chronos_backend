@@ -1,7 +1,7 @@
 import { Column, Model, Table, PrimaryKey, DataType } from 'sequelize-typescript';
 import { UUID } from 'node:crypto';
 
-@Table({ tableName: 'editor' })
+@Table({ tableName: 'editor', timestamps: false })
 export class Editor extends Model {
     @PrimaryKey
     @Column({

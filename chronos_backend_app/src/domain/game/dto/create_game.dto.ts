@@ -10,7 +10,7 @@ import { GAME_DESCRIPTION_MAX_LENGTH,
 export class CreateGameDto {
     @IsNotEmpty()
     @IsUUID()
-    editor_id: UUID;
+    editorId: UUID;
     
     @IsNotEmpty()
     @Length(
@@ -37,5 +37,5 @@ export class CreateGameDto {
 
     @IsNotEmpty()
     @IsNumber()
-    PEGI: number;
+    pegi: number;
 }

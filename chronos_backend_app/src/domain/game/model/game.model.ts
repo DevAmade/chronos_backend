@@ -52,5 +52,5 @@ export class Game extends Model {
         type: DataType.NUMBER,
         allowNull: false,
     })
-    PEGI: number;
+    pegi: number;
 }
