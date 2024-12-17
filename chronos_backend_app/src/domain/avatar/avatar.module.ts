@@ -15,5 +15,8 @@ import { AvatarService } from './service/avatar.service';
     providers: [
         AvatarService,
     ],
+    exports: [
+        AvatarService,
+    ],
 })
 export class AvatarModule {}

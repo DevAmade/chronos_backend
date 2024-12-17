@@ -4,8 +4,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
-import { XSSPipe } from '../../../core/pipe/xss.pipe';
-import { UniqueException } from '../../../core/exception/unique_exception';
+import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
 import { Avatar } from '../model/avatar.model';
 import { AvatarService } from '../service/avatar.service';
@@ -24,12 +23,6 @@ export class AvatarController
 
         @Post()
         async create(@Body(XSSPipe) data: CreateAvatarDto, @Req() req: Request): Promise<Avatar | Error> {
-            const existingDuplicate = await this.avatarService.findOneByAttribute([{ name: data.name }]);
-
-            if(existingDuplicate) {
-                throw new UniqueException();
-            }
-
             const createdAvatar = await this.avatarService.create(data);
 
             this.loggerService.log(
@@ -47,14 +40,9 @@ export class AvatarController
             @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingAvatar = await this.avatarService.findOneById(id);
-            const existingDuplicate = await this.avatarService.findOneByAttribute([{ name: data.name }]);
 
             if(!existingAvatar) {
                 throw new NotFoundException();
-            }
-
-            if(existingAvatar.name !== data.name && existingDuplicate) {
-                throw new UniqueException();
             }
 
             const updatedAvatar = await this.avatarService.update(id, data);

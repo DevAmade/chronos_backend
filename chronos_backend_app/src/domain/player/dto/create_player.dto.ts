@@ -1,6 +1,11 @@
 import { UUID } from "node:crypto";
 import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
 
+import { IsResourceId } from "../../../core/toolkit/validator/resource_id.validator";
+import { IsNotDuplicatedResource } from "../../../core/toolkit/validator/not_duplicated_resource.validator";
+
+import { AvatarService } from "../../avatar/service/avatar.service";
+import { PlayerService } from "../service/player.service";
 import { PLAYER_PASSWORD_MIN_LENGTH,
          PLAYER_PASSWORD_MIN_LOWERCASE,
          PLAYER_PASSWORD_MIN_NUMBERS,
@@ -20,6 +25,7 @@ import { PLAYER_PASSWORD_MIN_LENGTH,
 export class CreatePlayerDto {
     @IsOptional()
     @IsUUID()
+    @IsResourceId(AvatarService)
     avatarId: UUID;
 
     @IsNotEmpty()
@@ -28,6 +34,7 @@ export class CreatePlayerDto {
         PLAYER_PSEUDO_MAX_LENGTH,
     )
     @Matches(PLAYER_PSEUDO_REGEX)
+    @IsNotDuplicatedResource(PlayerService)
     pseudo: string;
 
     @IsNotEmpty()
@@ -56,6 +63,7 @@ export class CreatePlayerDto {
 
     @IsNotEmpty()
     @IsEmail()
+    @IsNotDuplicatedResource(PlayerService)
     email: string;
 
     @IsNotEmpty()

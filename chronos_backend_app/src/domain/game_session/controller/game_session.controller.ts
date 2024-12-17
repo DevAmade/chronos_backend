@@ -4,7 +4,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
-import { XSSPipe } from '../../../core/pipe/xss.pipe';
+import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
 import { GameSession } from '../model/game_session.model';
 import { GameSessionService } from '../service/game_session.service';

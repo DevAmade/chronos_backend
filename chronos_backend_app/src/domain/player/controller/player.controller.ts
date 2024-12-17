@@ -7,9 +7,8 @@ import { UUID } from 'node:crypto';
 import * as bcrypt from 'bcrypt';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
-import { HashPasswordPipe } from '../../../core/pipe/hash_password.pipe';
-import { XSSPipe } from '../../../core/pipe/xss.pipe';
-import { UniqueException } from '../../../core/exception/unique_exception';
+import { HashPasswordPipe } from '../../../core/toolkit/pipe/hash_password.pipe';
+import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
 import { PLAYER_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Player } from '../model/player.model';
@@ -78,12 +77,6 @@ export class PlayerController
 
         @Post()
         async create(@Body(HashPasswordPipe, XSSPipe) data: CreatePlayerDto, @Req() req: Request): Promise<Player | Error> {
-            const existingDuplicate = await this.playerService.findOneByAttribute([{ email: data.email }, { pseudo: data.pseudo }], 'or');
-
-            if(existingDuplicate) {
-                throw new UniqueException();
-            }
-
             const createdPlayer = await this.playerService.create(data);
 
             this.loggerService.log(
@@ -101,14 +94,9 @@ export class PlayerController
             @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingPlayer = await this.playerService.findOneById(id);
-            const existingDuplicate = await this.playerService.findOneByAttribute([{ email: data.email }, { pseudo: data.pseudo }], 'or');
 
             if(!existingPlayer) {
                 throw new NotFoundException();
-            }
-
-            if((existingPlayer.email !== data.email || existingPlayer.pseudo !== data.pseudo) && existingDuplicate) {
-                throw new UniqueException();
             }
 
             const updatedPlayer = await this.playerService.update(id, data);

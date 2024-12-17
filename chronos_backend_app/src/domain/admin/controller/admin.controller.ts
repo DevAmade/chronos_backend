@@ -7,9 +7,8 @@ import { UUID } from 'node:crypto';
 import * as bcrypt from 'bcrypt';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
-import { HashPasswordPipe } from '../../../core/pipe/hash_password.pipe';
-import { XSSPipe } from '../../../core/pipe/xss.pipe';
-import { UniqueException } from '../../../core/exception/unique_exception';
+import { HashPasswordPipe } from '../../../core/toolkit/pipe/hash_password.pipe';
+import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
 import { ADMIN_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Admin } from '../model/admin.model';
@@ -75,12 +74,6 @@ export class AdminController
 
         @Post()
         async create(@Body(HashPasswordPipe, XSSPipe) data: CreateAdminDto, @Req() req: Request): Promise<Admin | Error> {
-            const existingDuplicate = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
-
-            if(existingDuplicate) {
-                throw new UniqueException();
-            }
-
             const createdAdmin = await this.adminService.create(data);
 
             this.loggerService.log(
@@ -98,14 +91,9 @@ export class AdminController
             @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingAdmin = await this.adminService.findOneById(id);
-            const existingDuplicate = await this.adminService.findOneByAttribute([{ pseudo: data.pseudo }]);
 
             if(!existingAdmin) {
                 throw new NotFoundException();
-            }
-
-            if(existingAdmin.pseudo !== data.pseudo && existingDuplicate) {
-                throw new UniqueException();
             }
 
             const updatedAdmin = await this.adminService.update(id, data);

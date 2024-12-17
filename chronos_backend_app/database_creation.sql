@@ -116,7 +116,7 @@ CREATE TABLE game_session_player (
     game_session_id UUID,
     player_id UUID,
     team_id UUID,
-    PRIMARY KEY (game_session_id, player_id, team_id),
+    PRIMARY KEY (game_session_id, player_id),
     CONSTRAINT fk_game_session
         FOREIGN KEY (game_session_id)
         REFERENCES game_session(id),

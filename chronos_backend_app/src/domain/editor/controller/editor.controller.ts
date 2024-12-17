@@ -4,8 +4,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UUID } from 'node:crypto';
 
 import { SupportController } from '../../../core/toolkit/support.controller';
-import { XSSPipe } from '../../../core/pipe/xss.pipe';
-import { UniqueException } from '../../../core/exception/unique_exception';
+import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
 import { Editor } from '../model/editor.model';
 import { EditorService } from '../service/editor.service';
@@ -25,12 +24,6 @@ export class EditorController
 
         @Post()
         async create(@Body(XSSPipe) data: CreateEditorDto, @Req() req: Request): Promise<Editor | Error> {
-            const existingDuplicate = await this.editorService.findOneByAttribute([{ name: data.name }]);
-
-            if(existingDuplicate) {
-                throw new UniqueException();
-            }
-
             const createdEditor = await this.editorService.create(data);
 
             this.loggerService.log(
@@ -48,14 +41,9 @@ export class EditorController
             @Req() req: Request,
         ): Promise<[affectedCount: number] | Error> {
             const existingEditor = await this.editorService.findOneById(id);
-            const existingDuplicate = await this.editorService.findOneByAttribute([{ name: data.name }]);
 
             if(!existingEditor) {
                 throw new NotFoundException();
-            }
-
-            if(existingEditor.name !== data.name && existingDuplicate) {
-                throw new UniqueException();
             }
 
             const updatedEditor = await this.editorService.update(id, data);
