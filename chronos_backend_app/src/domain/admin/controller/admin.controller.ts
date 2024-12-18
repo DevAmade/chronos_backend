@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { HashPasswordPipe } from '../../../core/toolkit/pipe/hash_password.pipe';
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
-import { AdminGuard } from '../../guard/admin.guard';
+import { AdminGuard } from '../../toolkit/guard/admin.guard';
 import { ADMIN_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Admin } from '../model/admin.model';
 import { AdminService } from '../service/admin.service';

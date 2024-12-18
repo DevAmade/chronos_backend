@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext, LoggerService, Inject } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
-import { GameSessionService } from '../game_session/service/game_session.service';
+import { GameSessionService } from '../../game_session/service/game_session.service';
 
 @Injectable()
 export class CreatorSessionGuard implements CanActivate {
@@ -13,30 +13,29 @@ export class CreatorSessionGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
-        const clientIp = request.ip;
         const payloads = request['payloads'];
 
         if(!payloads) {
             this.loggerService.warn(
-                `Access attempt: { Client IP: ${clientIp} }`,
+                `Access attempt: { Client IP: ${request.ip} }`,
                 'CreatorSessionGuard#canActivate',
             );
 
             return false;
         }
 
-        const isAdmin = request['payloads'].admin;
+        const isAdmin = payloads.admin;
 
         if(isAdmin) {
             return true;
         }
 
-        const gameSessions = await this.gameSessionService.findManyByAttribute([{ organizerId: payloads.id }]);
+        const gameSessions = await this.gameSessionService.findManyByAttribute([{ organizer_id: payloads.id }]);
         const isMatch = gameSessions.find(session => session.id === request.params.id);
 
         if(!isMatch) {
             this.loggerService.warn(
-                `Access attempt: { Client IP: ${clientIp} }`,
+                `Access attempt: { Client IP: ${request.ip} }`,
                 'CreatorSessionGuard#canActivate',
             );
 

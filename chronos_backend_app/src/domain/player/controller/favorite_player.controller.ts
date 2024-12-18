@@ -2,13 +2,14 @@ import { Body, Controller, Delete, NotFoundException, Post, UseGuards } from '@n
 
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
-import { AuthGuard } from '../../guard/auth.guard';
+import { AuthGuard } from '../../toolkit/guard/auth.guard';
+import { ProfileGuard } from '../../toolkit/guard/profile.guard';
 import { FavoritePlayer } from '../model/favorite_player.model';
 import { FavoritePlayerService } from '../service/favorite_player.service';
 import { FavoritePlayerDto } from '../dto/favorite_player.dto';
 
 @Controller('favorite_player')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, ProfileGuard)
 export class FavoritePlayerController  {
 
     constructor(private readonly favoritePlayerService: FavoritePlayerService) {}

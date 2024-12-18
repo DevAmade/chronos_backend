@@ -5,11 +5,12 @@ import { UUID } from 'node:crypto';
 
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
-import { AdminGuard } from '../../guard/admin.guard';
-import { AuthGuard } from '../../guard/auth.guard';
-import { CreatorSessionGuard } from '../../guard/creator_session.guard';
+import { AdminGuard } from '../../toolkit/guard/admin.guard';
+import { AuthGuard } from '../../toolkit/guard/auth.guard';
+import { CreatorSessionGuard } from '../../toolkit/guard/creator_session.guard';
 import { GameSession } from '../model/game_session.model';
 import { GameSessionService } from '../service/game_session.service';
+import { GameSessionPlayerService } from '../service/game_session_player.service';
 import { CreateGameSessionDto } from '../dto/create_game_session.dto';
 import { UpdateGameSessionDto } from '../dto/update_game_session.dto';
 
@@ -18,6 +19,7 @@ export class GameSessionController {
     
     constructor(
         private readonly gameSessionService: GameSessionService,
+        private readonly gameSessionPlayerService: GameSessionPlayerService,
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly loggerService: LoggerService,
     ) {}
 
@@ -25,6 +27,8 @@ export class GameSessionController {
     @UseGuards(AuthGuard)
     async create(@Body(XSSPipe) data: CreateGameSessionDto, @Req() req: Request): Promise<GameSession> {
         const createdGameSession = await this.gameSessionService.create(data);
+
+        data.gameSessionPlayers.forEach(player => this.gameSessionPlayerService.addGameSessionPlayer({ playerId: player.playerId, gameSessionId: createdGameSession.id }))
 
         this.loggerService.log(
             `Game session created: { Client IP: ${req.ip}, Game session id: ${createdGameSession.id} }`,
@@ -45,6 +49,10 @@ export class GameSessionController {
 
         if(!existingGameSession) {
             throw new NotFoundException();
+        }
+
+        if(data.gameSessionPlayers) {
+            data.gameSessionPlayers.forEach(player => this.gameSessionPlayerService.addGameSessionPlayer({ playerId: player.playerId, gameSessionId: id }))
         }
 
         const updatedGameSession = await this.gameSessionService.update(id, data);

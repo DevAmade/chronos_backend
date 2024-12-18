@@ -10,9 +10,9 @@ import { GameSessionPlayerDto } from '../dto/game_session_player.dto';
 export class GameSessionPlayerService {
     constructor(@InjectModel(GameSessionPlayer) private readonly gameSessionPlayerModel: typeof GameSessionPlayer) {}
 
-    async findOneByAttribute(playerId: UUID, gameId: UUID): Promise<GameSessionPlayer> {
+    async findOneByAttribute(playerId: UUID, gameSessionId: UUID): Promise<GameSessionPlayer> {
         const options: FindOptions = { 
-            where: [{ game_session_id: gameId }, { player_id: playerId }],
+            where: [{ game_session_id: gameSessionId }, { player_id: playerId }],
         }
 
         return await this.gameSessionPlayerModel.findOne(options);

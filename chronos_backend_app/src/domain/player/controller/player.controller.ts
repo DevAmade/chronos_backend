@@ -9,9 +9,9 @@ import * as bcrypt from 'bcrypt';
 import { HashPasswordPipe } from '../../../core/toolkit/pipe/hash_password.pipe';
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
-import { AdminGuard } from '../../guard/admin.guard';
-import { AuthGuard } from '../../guard/auth.guard';
-import { ProfileGuard } from '../../guard/profile.guard';
+import { AdminGuard } from '../../toolkit/guard/admin.guard';
+import { AuthGuard } from '../../toolkit/guard/auth.guard';
+import { ProfileGuard } from '../../toolkit/guard/profile.guard';
 import { PLAYER_JWT_TOKEN_EXPIRATION } from '../../config/module.config';
 import { Player } from '../model/player.model';
 import { PlayerService } from '../service/player.service';
@@ -76,7 +76,6 @@ export class PlayerController {
     }
 
     @Post()
-    @UseGuards(AuthGuard)
     async create(@Body(HashPasswordPipe, XSSPipe) data: CreatePlayerDto, @Req() req: Request): Promise<Player | Error> {
         const createdPlayer = await this.playerService.create(data);
 

@@ -8,29 +8,29 @@ export class ProfileGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
-        const clientIp = request.ip;
         const payloads = request['payloads'];
 
         if(!payloads) {
             this.loggerService.warn(
-                `Access attempt: { Client IP: ${clientIp} }`,
+                `Access attempt: { Client IP: ${request.ip} }`,
                 'ProfileGuard#canActivate',
             );
 
             return false;
         }
 
-        const isAdmin = request['payloads'].admin;
+        const isAdmin = payloads.admin;
 
         if(isAdmin) {
             return true;
         }
 
-        const isMatch = payloads.id === request.params.id;
+        const isMatch = request.params.id ? payloads.id === request.params.id : 
+            payloads.id === request.body.playerId;
 
         if(!isMatch) {
             this.loggerService.warn(
-                `Access attempt: { Client IP: ${clientIp} }`,
+                `Access attempt: { Client IP: ${request.ip} }`,
                 'ProfileGuard#canActivate',
             );
 

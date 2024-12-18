@@ -5,8 +5,8 @@ import { UUID } from 'node:crypto';
 
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
-import { AdminGuard } from '../../guard/admin.guard';
-import { AuthGuard } from '../../guard/auth.guard';
+import { AdminGuard } from '../../toolkit/guard/admin.guard';
+import { AuthGuard } from '../../toolkit/guard/auth.guard';
 import { Editor } from '../model/editor.model';
 import { EditorService } from '../service/editor.service';
 import { CreateEditorDto } from '../dto/create_editor.dto';

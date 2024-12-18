@@ -15,7 +15,6 @@ export class PlayerGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const authHeader = request.headers.authorization;
-        const clientIp = request.ip;
 
         if(!authHeader) {
             return false;
@@ -34,7 +33,7 @@ export class PlayerGuard implements CanActivate {
             return true;
         } catch {
             this.loggerService.warn(
-                `Access attempt: { Client IP: ${clientIp} }`,
+                `Access attempt: { Client IP: ${request.ip} }`,
                 'PlayerGuard#canActivate',
             );
 

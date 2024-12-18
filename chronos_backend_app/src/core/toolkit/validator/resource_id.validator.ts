@@ -5,26 +5,27 @@ import { APP } from '../../../main';
 @ValidatorConstraint({ async: true })
 export class IsResourceIdConstraint implements ValidatorConstraintInterface {
 
-    async validate(value: any, args: ValidationArguments) {
+    async validate(value: any, args: ValidationArguments): Promise<boolean> {
         const service = (await APP).get(args.constraints[0]);
 
         return await service.findOneById(value) ? true : false;
     }
 
-    defaultMessage(args: ValidationArguments) {
+    defaultMessage(args: ValidationArguments): string {
         return `This resource with the ${args.property} ${args.value} doesn't exists`;
     }
 }
 
-export function IsResourceId(service: any, validationOptions?: ValidationOptions) {
-    return function (object: Object, propertyName: string) {
-        registerDecorator({
-            target: object.constructor,
-            propertyName: propertyName,
-            options: validationOptions,
-            constraints: [service],
-            async: true,
-            validator: IsResourceIdConstraint,
-        });
-    };
-}
+export function IsResourceId(service: any, validationOptions?: ValidationOptions):
+    (object: Object, propertyName: string) => void {
+        return function (object: Object, propertyName: string) {
+            registerDecorator({
+                target: object.constructor,
+                propertyName: propertyName,
+                options: validationOptions,
+                constraints: [service],
+                async: true,
+                validator: IsResourceIdConstraint,
+            });
+        };
+    }

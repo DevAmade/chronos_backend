@@ -5,8 +5,8 @@ import { UUID } from 'node:crypto';
 
 import { XSSPipe } from '../../../core/toolkit/pipe/xss.pipe';
 
-import { AdminGuard } from '../../guard/admin.guard';
-import { AuthGuard } from '../../guard/auth.guard';
+import { AdminGuard } from '../../toolkit/guard/admin.guard';
+import { AuthGuard } from '../../toolkit/guard/auth.guard';
 import { Avatar } from '../model/avatar.model';
 import { AvatarService } from '../service/avatar.service';
 import { CreateAvatarDto } from '../dto/create_avatar.dto';
