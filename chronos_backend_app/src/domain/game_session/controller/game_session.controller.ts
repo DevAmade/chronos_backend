@@ -28,7 +28,9 @@ export class GameSessionController {
     async create(@Body(XSSPipe) data: CreateGameSessionDto, @Req() req: Request): Promise<GameSession> {
         const createdGameSession = await this.gameSessionService.create(data);
 
-        data.gameSessionPlayers.forEach(player => this.gameSessionPlayerService.addGameSessionPlayer({ playerId: player.playerId, gameSessionId: createdGameSession.id }))
+        data.gameSessionPlayers.forEach(
+            async player => await this.gameSessionPlayerService.addGameSessionPlayer({ playerId: player.playerId, gameSessionId: createdGameSession.id }),
+        );
 
         this.loggerService.log(
             `Game session created: { Client IP: ${req.ip}, Game session id: ${createdGameSession.id} }`,
@@ -52,7 +54,9 @@ export class GameSessionController {
         }
 
         if(data.gameSessionPlayers) {
-            data.gameSessionPlayers.forEach(player => this.gameSessionPlayerService.addGameSessionPlayer({ playerId: player.playerId, gameSessionId: id }))
+            data.gameSessionPlayers.forEach(
+                async player => await this.gameSessionPlayerService.addGameSessionPlayer({ playerId: player.playerId, gameSessionId: id }),
+            );
         }
 
         const updatedGameSession = await this.gameSessionService.update(id, data);

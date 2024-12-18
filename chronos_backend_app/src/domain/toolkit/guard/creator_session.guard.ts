@@ -14,8 +14,9 @@ export class CreatorSessionGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const payloads = request['payloads'];
+        const paramsId = request.params.id;
 
-        if(!payloads) {
+        if(!payloads || !paramsId) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,
                 'CreatorSessionGuard#canActivate',
@@ -30,8 +31,18 @@ export class CreatorSessionGuard implements CanActivate {
             return true;
         }
 
-        const gameSessions = await this.gameSessionService.findManyByAttribute([{ organizer_id: payloads.id }]);
-        const isMatch = gameSessions.find(session => session.id === request.params.id);
+        const gameSession = await this.gameSessionService.findOneById(paramsId);
+
+        if(!gameSession) {
+            this.loggerService.warn(
+                `Access attempt: { Client IP: ${request.ip} }`,
+                'CreatorSessionGuard#canActivate',
+            );
+
+            return false;
+        }
+
+        const isMatch = gameSession.organizerId === payloads.id;
 
         if(!isMatch) {
             this.loggerService.warn(

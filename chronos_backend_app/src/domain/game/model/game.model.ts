@@ -18,7 +18,6 @@ export class Game extends Model {
     @Column({
         field: 'editor_id',
         type: DataType.UUID,
-        allowNull: false,
     })
     editorId: UUID;
 

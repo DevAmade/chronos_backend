@@ -9,6 +9,8 @@ export class ProfileGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const payloads = request['payloads'];
+        const paramsId = request.params.id;
+        const bodyPlayerId = request.body.playerId;
 
         if(!payloads) {
             this.loggerService.warn(
@@ -25,8 +27,17 @@ export class ProfileGuard implements CanActivate {
             return true;
         }
 
-        const isMatch = request.params.id ? payloads.id === request.params.id : 
-            payloads.id === request.body.playerId;
+        if(!paramsId && !bodyPlayerId) {
+            this.loggerService.warn(
+                `Access attempt: { Client IP: ${request.ip} }`,
+                'ProfileGuard#canActivate',
+            );
+
+            return false;
+        }
+
+        const isMatch = paramsId ? payloads.id === paramsId : 
+            payloads.id === bodyPlayerId;
 
         if(!isMatch) {
             this.loggerService.warn(

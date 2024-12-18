@@ -13,7 +13,7 @@ import { GAME_DESCRIPTION_MAX_LENGTH,
          GAME_NAME_REGEX } from "../validation/validation.config";
 
 export class CreateGameDto {
-    @IsNotEmpty()
+    @IsOptional()
     @IsUUID()
     @IsResourceId(EditorService)
     editorId: UUID;

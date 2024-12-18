@@ -9,9 +9,9 @@ export class PlayerSessionGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const payloads = request['payloads'];
-        const body = request.body;
+        const bodyPlayerId = request.body.playerId;
 
-        if(!payloads) {
+        if(!payloads || !bodyPlayerId) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,
                 'PlayerSessionGuard#canActivate',
@@ -26,7 +26,7 @@ export class PlayerSessionGuard implements CanActivate {
             return true;
         }
 
-        const isMatch = payloads.id === body.playerId;
+        const isMatch = payloads.id === bodyPlayerId;
 
         if(!isMatch) {
             this.loggerService.warn(

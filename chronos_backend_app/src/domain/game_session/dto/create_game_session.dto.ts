@@ -23,7 +23,7 @@ export class CreateGameSessionDto {
     @IsResourceId(PlayerService)
     organizerId: UUID;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsUUID()
     @IsResourceId(GameService)
     gameId: UUID;

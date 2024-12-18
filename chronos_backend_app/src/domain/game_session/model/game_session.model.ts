@@ -27,7 +27,6 @@ export class GameSession extends Model {
     @Column({
         field: 'game_id',
         type: DataType.UUID,
-        allowNull: false,
     })
     gameId: UUID;
 
