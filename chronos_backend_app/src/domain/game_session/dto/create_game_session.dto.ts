@@ -8,7 +8,9 @@ import { IsNotDuplicatedArrayValue } from "../../../core/toolkit/validator/not_d
 import { IsCorrectNumberOfPlayer } from "../../toolkit/validator/correct_number_player.validator";
 import { IsPlayersQuiteOld } from "../../toolkit/validator/player_quite_old.validator";
 import { PlayerService } from "../../player/service/player.service";
+import { Player } from "../../player/model/player.model";
 import { GameService } from "../../game/service/game.service";
+import { Game } from "../../game/model/game.model";
 import { GAME_SESSION_DESCRIPTION_MAX_LENGTH,
          GAME_SESSION_DESCRIPTION_MIN_LENGTH,
          GAME_SESSION_NAME_MAX_LENGTH,
@@ -20,12 +22,12 @@ export class CreateGameSessionDto {
 
     @IsNotEmpty()
     @IsUUID()
-    @IsResourceId(PlayerService)
+    @IsResourceId(new PlayerService(Player))
     organizerId: UUID;
 
     @IsOptional()
     @IsUUID()
-    @IsResourceId(GameService)
+    @IsResourceId(new GameService(Game))
     gameId: UUID;
 
     @IsNotEmpty()

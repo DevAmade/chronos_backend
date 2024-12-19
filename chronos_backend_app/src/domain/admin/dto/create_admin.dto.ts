@@ -1,11 +1,13 @@
-import { IsNotEmpty, IsOptional, IsStrongPassword, IsUUID, Length, Matches } from "class-validator";
+import { IsNotEmpty, IsOptional, IsStrongPassword, IsUUID, Length, Matches, Validate } from "class-validator";
 import { UUID } from "node:crypto";
 
 import { IsResourceId } from "../../../core/toolkit/validator/resource_id.validator";
 import { IsNotDuplicatedResource } from "../../../core/toolkit/validator/not_duplicated_resource.validator";
 
 import { AvatarService } from "../../avatar/service/avatar.service";
+import { Avatar } from "../../avatar/model/avatar.model";
 import { AdminService } from "../service/admin.service";
+import { Admin } from "../model/admin.model";
 import { ADMIN_PASSWORD_MIN_LENGTH,
          ADMIN_PASSWORD_MIN_LOWERCASE,
          ADMIN_PASSWORD_MIN_NUMBERS,
@@ -18,7 +20,7 @@ import { ADMIN_PASSWORD_MIN_LENGTH,
 export class CreateAdminDto {
     @IsOptional()
     @IsUUID()
-    @IsResourceId(AvatarService)
+    @IsResourceId(new AvatarService(Avatar))
     avatarId: UUID;
 
     @IsNotEmpty()
@@ -27,7 +29,7 @@ export class CreateAdminDto {
         ADMIN_PSEUDO_MAX_LENGTH,
     )
     @Matches(ADMIN_PSEUDO_REGEX)
-    @IsNotDuplicatedResource(AdminService)
+    @IsNotDuplicatedResource(new AdminService(Admin))
     pseudo: string;
 
     @IsNotEmpty()

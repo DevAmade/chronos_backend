@@ -20,8 +20,6 @@ async function bootstrap() {
         `Server listen: ${configService.get('APP_HOST')}:${configService.get('APP_PORT')}`,
         'Server',
     );
-
-    return app;
 }
 
-export const APP = bootstrap();
+bootstrap();

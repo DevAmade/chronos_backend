@@ -1,6 +1,5 @@
 import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments, ValidationOptions, registerDecorator } from 'class-validator';
 
-import { APP } from '../../../main';
 import { GameService } from '../../game/service/game.service';
 import { Game } from '../../game/model/game.model';
 import { CreateGameSessionDto } from '../../game_session/dto/create_game_session.dto';
@@ -12,15 +11,17 @@ export class IsCorrectNumberOfPlayerConstraint implements ValidatorConstraintInt
     private game: Game;
 
     async validate(value: any, args: ValidationArguments): Promise<boolean> {
-        const gameService = (await APP).get(GameService);
+        const gameService = new GameService(Game);
+        const gameSessionPlayer = value;
         this.game = await gameService.findOneById((args.object as CreateGameSessionDto).gameId);
-        value.push({ playerId: (args.object as CreateGameSessionDto).organizerId });
+
+        gameSessionPlayer.push({ playerId: (args.object as CreateGameSessionDto).organizerId });
 
         return this.game ? 
-            value.length <= this.game.maxNumberPlayers &&
-            value.length >= this.game.minNumberPlayers :
-            value.length <= GAME_SESSION_MAX_NUMBER_OF_PLAYERS &&
-            value.length >= GAME_SESSION_MIN_NUMBER_OF_PLAYERS;
+            gameSessionPlayer.length <= this.game.maxNumberPlayers &&
+            gameSessionPlayer.length >= this.game.minNumberPlayers :
+            gameSessionPlayer.length <= GAME_SESSION_MAX_NUMBER_OF_PLAYERS &&
+            gameSessionPlayer.length >= GAME_SESSION_MIN_NUMBER_OF_PLAYERS;
     }
 
     defaultMessage(args: ValidationArguments): string {

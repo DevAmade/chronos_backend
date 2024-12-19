@@ -5,7 +5,9 @@ import { IsResourceId } from "../../../core/toolkit/validator/resource_id.valida
 import { IsNotDuplicatedResource } from "../../../core/toolkit/validator/not_duplicated_resource.validator";
 
 import { AvatarService } from "../../avatar/service/avatar.service";
+import { Avatar } from "../../avatar/model/avatar.model";
 import { PlayerService } from "../service/player.service";
+import { Player } from "../model/player.model";
 import { PLAYER_PASSWORD_MIN_LENGTH,
          PLAYER_PASSWORD_MIN_LOWERCASE,
          PLAYER_PASSWORD_MIN_NUMBERS,
@@ -25,7 +27,7 @@ import { PLAYER_PASSWORD_MIN_LENGTH,
 export class CreatePlayerDto {
     @IsOptional()
     @IsUUID()
-    @IsResourceId(AvatarService)
+    @IsResourceId(new AvatarService(Avatar))
     avatarId: UUID;
 
     @IsNotEmpty()
@@ -34,7 +36,7 @@ export class CreatePlayerDto {
         PLAYER_PSEUDO_MAX_LENGTH,
     )
     @Matches(PLAYER_PSEUDO_REGEX)
-    @IsNotDuplicatedResource(PlayerService)
+    @IsNotDuplicatedResource(new PlayerService(Player))
     pseudo: string;
 
     @IsNotEmpty()
@@ -63,7 +65,7 @@ export class CreatePlayerDto {
 
     @IsNotEmpty()
     @IsEmail()
-    @IsNotDuplicatedResource(PlayerService)
+    @IsNotDuplicatedResource(new PlayerService(Player))
     email: string;
 
     @IsNotEmpty()

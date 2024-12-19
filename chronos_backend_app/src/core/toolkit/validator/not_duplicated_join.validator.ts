@@ -1,12 +1,10 @@
 import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments, ValidationOptions, registerDecorator } from 'class-validator';
 
-import { APP } from '../../../main';
-
 @ValidatorConstraint({ async: true })
 export class IsNotDuplicatedJoinConstraint implements ValidatorConstraintInterface {
 
     async validate(value: any, args: ValidationArguments) {
-        const service = (await APP).get(args.constraints[0]);
+        const service = args.constraints[0];
         const secondResourceId = Object.values(args.object)[1];
 
         return await service.findOneByAttribute(value, secondResourceId) ? false : true;

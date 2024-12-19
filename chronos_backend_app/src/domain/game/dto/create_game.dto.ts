@@ -5,7 +5,9 @@ import { IsResourceId } from "../../../core/toolkit/validator/resource_id.valida
 import { IsNotDuplicatedResource } from "../../../core/toolkit/validator/not_duplicated_resource.validator";
 
 import { EditorService } from "../../editor/service/editor.service";
+import { Editor } from "../../editor/model/editor.model";
 import { GameService } from "../service/game.service";
+import { Game } from "../model/game.model";
 import { GAME_DESCRIPTION_MAX_LENGTH,
          GAME_DESCRIPTION_MIN_LENGTH,
          GAME_NAME_MAX_LENGTH, 
@@ -15,7 +17,7 @@ import { GAME_DESCRIPTION_MAX_LENGTH,
 export class CreateGameDto {
     @IsOptional()
     @IsUUID()
-    @IsResourceId(EditorService)
+    @IsResourceId(new EditorService(Editor))
     editorId: UUID;
     
     @IsNotEmpty()
@@ -24,7 +26,7 @@ export class CreateGameDto {
         GAME_NAME_MAX_LENGTH,
     )
     @Matches(GAME_NAME_REGEX)
-    @IsNotDuplicatedResource(GameService)
+    @IsNotDuplicatedResource(new GameService(Game))
     name: string;
 
     @IsOptional()

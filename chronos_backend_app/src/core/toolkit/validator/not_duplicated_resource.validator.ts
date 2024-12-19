@@ -1,12 +1,12 @@
+import { Injectable } from '@nestjs/common';
 import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments, ValidationOptions, registerDecorator } from 'class-validator';
 
-import { APP } from '../../../main';
-
 @ValidatorConstraint({ async: true })
+@Injectable()
 export class IsNotDuplicatedResourceConstraint implements ValidatorConstraintInterface {
 
     async validate(value: any, args: ValidationArguments): Promise<boolean> {
-        const service = (await APP).get(args.constraints[0]);
+        const service = args.constraints[0];
 
         return await service.findOneByAttribute([{ [args.property]: value }]) ? false : true;
     }
