@@ -15,13 +15,11 @@ export class IsCorrectNumberOfPlayerConstraint implements ValidatorConstraintInt
         const gameSessionPlayer = value;
         this.game = await gameService.findOneById((args.object as CreateGameSessionDto).gameId);
 
-        gameSessionPlayer.push({ playerId: (args.object as CreateGameSessionDto).organizerId });
-
         return this.game ? 
-            gameSessionPlayer.length <= this.game.maxNumberPlayers &&
-            gameSessionPlayer.length >= this.game.minNumberPlayers :
-            gameSessionPlayer.length <= GAME_SESSION_MAX_NUMBER_OF_PLAYERS &&
-            gameSessionPlayer.length >= GAME_SESSION_MIN_NUMBER_OF_PLAYERS;
+            (gameSessionPlayer.length + 1) <= this.game.maxNumberPlayers &&
+            (gameSessionPlayer.length + 1) >= this.game.minNumberPlayers :
+            (gameSessionPlayer.length + 1) <= GAME_SESSION_MAX_NUMBER_OF_PLAYERS &&
+            (gameSessionPlayer.length + 1) >= GAME_SESSION_MIN_NUMBER_OF_PLAYERS;
     }
 
     defaultMessage(args: ValidationArguments): string {

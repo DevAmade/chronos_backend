@@ -35,20 +35,20 @@ export class Game extends Model {
 
     @Column({
         field: 'min_number_players',
-        type: DataType.NUMBER,
+        type: DataType.INTEGER,
         allowNull: false,
     })
     minNumberPlayers: number;
 
     @Column({
         field: 'max_number_players',
-        type: DataType.NUMBER,
+        type: DataType.INTEGER,
         allowNull: false,
     })
     maxNumberPlayers: number;
 
     @Column({
-        type: DataType.NUMBER,
+        type: DataType.INTEGER,
         allowNull: false,
     })
     pegi: number;

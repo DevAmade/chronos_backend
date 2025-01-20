@@ -17,10 +17,14 @@ export class IsPlayersQuiteOldConstraint implements ValidatorConstraintInterface
         const gameSessionPlayer = value;
         this.game = await gameService.findOneById((args.object as CreateGameSessionDto).gameId);
 
-        gameSessionPlayer.push({ playerId: (args.object as CreateGameSessionDto).organizerId });
-
         if(!this.game) {
             return true;
+        }
+
+        const organizerAge = this.calculatePlayerAge(await playerService.findOneById((args.object as CreateGameSessionDto).organizerId));
+        
+        if(this.game.pegi > organizerAge) {
+            return false;
         }
 
         for(const player of gameSessionPlayer) {
