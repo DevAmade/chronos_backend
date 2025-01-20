@@ -7,10 +7,19 @@ import { LoggerModule } from './logger/logger.module';
 
 @Module({
     imports: [
-        DatabaseModule,
         ConfigurationModule,
-        RateLimitingModule,
         LoggerModule,
+
+        /*
+        * Importing the rate-limiting module into the app.
+        */
+        RateLimitingModule,
+
+        /*
+        * Importing the Sequelize ORM module into the app.
+        */
+        DatabaseModule,
+
     ],
 })
-export class CoreModule {}
+export class CoreModule {}       

@@ -14,6 +14,14 @@ async function bootstrap() {
     app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
     app.useGlobalPipes(new ValidationPipe());
 
+    /*    
+    *  Enable CORS to authorize only requests from the client side application
+    */
+    app.enableCors({
+        origin: configService.get('CLIENT_URL'),
+        methods: 'GET, PUT, POST, DELETE',
+    });
+
     await app.listen(configService.get('APP_PORT'));
 
     loggerService.log(

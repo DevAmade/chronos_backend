@@ -33,6 +33,9 @@ export class PlayerController {
     async auth(@Body() data: AuthPlayerDto, @Req() req: Request): Promise<{ token: string } | Error> {
         const player = await this.playerService.findOneByAttribute([{ email: data.email }]);
 
+        /*
+        * Check whether the email in request body is assigned to an existing player.
+        */
         if(!player) {
             this.loggerService.warn(
                 `Failed connection: { Client IP: ${req.ip}, Used identifier: ${data.email} }`,
@@ -44,6 +47,9 @@ export class PlayerController {
 
         const isMatch = await bcrypt.compare(data.password, player.password);
 
+        /*
+        * Check whether the password in request body matches the player's password.
+        */
         if(!isMatch) {
             this.loggerService.warn(
                 `Failed connection: { Client IP: ${req.ip}, Player id: ${player.id} }`,
@@ -67,6 +73,9 @@ export class PlayerController {
             admin: false,
         };
 
+        /*
+        * Return a temporary JWT encrypted with a strong secret key containing the user's payloads.
+        */
         return {
             token: await this.jwtService.signAsync(
                 payload, 
@@ -75,6 +84,9 @@ export class PlayerController {
         }
     }
 
+    /*
+    * Use of safety pipes in a player POST route.
+    */
     @Post()
     async create(@Body(HashPasswordPipe, XSSPipe) data: CreatePlayerDto, @Req() req: Request): Promise<Player | Error> {
         const createdPlayer = await this.playerService.create(data);
@@ -87,6 +99,9 @@ export class PlayerController {
         return createdPlayer;
     }
 
+    /*
+    * Use of guards in a player PUT route.
+    */
     @Put(':id')
     @UseGuards(AuthGuard, ProfileGuard)
     async update(
@@ -110,6 +125,9 @@ export class PlayerController {
         return updatedPlayer;
     }
 
+    /*
+    * Use of auth guard in a player GET route.
+    */
     @Get(':id')
     @UseGuards(AuthGuard)
     async findOneById(@Param('id', ParseUUIDPipe) id: UUID): Promise<Player | Error> {

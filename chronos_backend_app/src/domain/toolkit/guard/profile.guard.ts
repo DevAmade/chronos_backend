@@ -12,6 +12,9 @@ export class ProfileGuard implements CanActivate {
         const paramsId = request.params.id;
         const bodyPlayerId = request.body.playerId;
 
+        /*
+        * Check whether the request contains payloads.
+        */
         if(!payloads) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,
@@ -23,10 +26,17 @@ export class ProfileGuard implements CanActivate {
 
         const isAdmin = payloads.admin;
 
+        /*
+        * Check whether the payloads contains admin="true".
+        * If yes, authorize access.
+        */
         if(isAdmin) {
             return true;
         }
 
+        /*
+        * Check whether the request contains player id in params or in body.
+        */
         if(!paramsId && !bodyPlayerId) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,
@@ -39,6 +49,10 @@ export class ProfileGuard implements CanActivate {
         const isMatch = paramsId ? payloads.id === paramsId : 
             payloads.id === bodyPlayerId;
 
+        /*
+        * Check whether the player id in the request matches the player id in the payloads.
+        * If no, refuse access.
+        */
         if(!isMatch) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,

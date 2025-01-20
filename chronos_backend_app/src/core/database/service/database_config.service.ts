@@ -9,6 +9,9 @@ export class DatabaseConfigService implements SequelizeOptionsFactory {
 
     constructor(private readonly configService: ConfigService) {}
 
+    /*
+    * Creation of Sequelize ORM options.
+    */
     async createSequelizeOptions(): Promise<SequelizeModuleOptions> {
         return Promise.resolve({
             dialect: this.configService.get('DATABASE_DIALECT'),
@@ -22,4 +25,5 @@ export class DatabaseConfigService implements SequelizeOptionsFactory {
             logging: LOGGING_DATABASE,
         });
     }
+
 }

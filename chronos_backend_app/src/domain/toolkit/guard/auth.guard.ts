@@ -11,7 +11,11 @@ export class AuthGuard implements CanActivate {
         private readonly playerGuard: PlayerGuard,
     ) {}
 
+    /*
+    * Authorize access if the player guard return true or if the admin guard return true.
+    */
     async canActivate(context: ExecutionContext): Promise<boolean> {
         return await this.playerGuard.canActivate(context) || await this.adminGuard.canActivate(context);
     }
+
 }

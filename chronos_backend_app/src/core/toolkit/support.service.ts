@@ -11,6 +11,9 @@ export abstract class SupportService<C, U, M extends Model> {
         return await this.model.findByPk(id);
     }
 
+    /*
+    * Example of a prepared Sequelize ORM request
+    */
     async findOneByAttribute(
         findOptions: { [attribute: string]: any }[],
         operator?: 'or',
