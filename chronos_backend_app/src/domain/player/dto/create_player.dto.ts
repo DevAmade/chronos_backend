@@ -66,6 +66,9 @@ export class CreatePlayerDto {
     @IsNotDuplicatedResource(PlayerService)
     email: string;
 
+    /*
+    * DTO password validation.
+    */
     @IsNotEmpty()
     @IsStrongPassword({
         minLength: PLAYER_PASSWORD_MIN_LENGTH,
@@ -75,4 +78,5 @@ export class CreatePlayerDto {
         minSymbols: PLAYER_PASSWORD_MIN_SYMBOLS,
     })
     password: string;
+
 }

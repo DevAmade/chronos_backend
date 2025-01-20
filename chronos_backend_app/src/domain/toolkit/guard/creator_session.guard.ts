@@ -16,6 +16,9 @@ export class CreatorSessionGuard implements CanActivate {
         const payloads = request['payloads'];
         const paramsId = request.params.id;
 
+        /*
+        * Check whether the request contains payloads and an id in the params.
+        */
         if(!payloads || !paramsId) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,
@@ -27,12 +30,19 @@ export class CreatorSessionGuard implements CanActivate {
 
         const isAdmin = payloads.admin;
 
+        /*
+        * Check whether the payloads contains admin="true".
+        * If yes, authorize access.
+        */
         if(isAdmin) {
             return true;
         }
 
         const gameSession = await this.gameSessionService.findOneById(paramsId);
 
+        /*
+        * Check whether the id in the request params corresponds to a game session.
+        */
         if(!gameSession) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,
@@ -44,6 +54,10 @@ export class CreatorSessionGuard implements CanActivate {
 
         const isMatch = gameSession.organizerId === payloads.id;
 
+        /*
+        * Check whether the player id in the payloads matches the organizer id in the game session.
+        * If no, refuse access.
+        */
         if(!isMatch) {
             this.loggerService.warn(
                 `Access attempt: { Client IP: ${request.ip} }`,

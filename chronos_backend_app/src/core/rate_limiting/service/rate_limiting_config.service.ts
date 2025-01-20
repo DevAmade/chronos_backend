@@ -11,6 +11,9 @@ import { RATE_LIMITING_REQUEST_LIMIT_LONG,
 @Injectable()
 export class RateLimitingConfigService implements ThrottlerOptionsFactory {
 
+    /*
+    * Creation of rate-limiting options.
+    */
     async createThrottlerOptions(): Promise<ThrottlerModuleOptions> {
         return Promise.resolve({
             throttlers: [
@@ -32,4 +35,5 @@ export class RateLimitingConfigService implements ThrottlerOptionsFactory {
             ]
         });
     }
+
 }
