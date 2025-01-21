@@ -71,7 +71,7 @@ export class AdminController {
     }
 
     @Post()
-    @UseGuards(AdminGuard)
+    // @UseGuards(AdminGuard)
     async create(@Body(HashPasswordPipe, XSSPipe) data: CreateAdminDto, @Req() req: Request): Promise<Admin | Error> {
         const createdAdmin = await this.adminService.create(data);
 
