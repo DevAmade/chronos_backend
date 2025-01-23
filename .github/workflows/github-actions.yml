@@ -22,7 +22,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Change directory to 'chronos_backend_app'
-              run: cd ../chronos_backend_app
+              run: cd chronos_backend_app
 
             - name: Set up Node
               uses: actions/setup-node@v4
