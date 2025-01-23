@@ -3,5 +3,9 @@
 /node_modules
 /build
 
-# dotenv environment variable files
-.env
+# dotenv environment variable file
+.env.*
+
+# log
+/log
+*.log
