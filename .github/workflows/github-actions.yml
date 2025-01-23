@@ -1,9 +1,13 @@
 name: Node.js CI
 
-on: [push]
-    #     branches: [ main ]
-    # pull_request:
-    #     branches: [ main ]
+on: 
+    push:
+        branches: 
+            - main
+            - Docker_CI/CD
+    pull_request:
+        branches: 
+            - main
 
 jobs:
 
@@ -41,6 +45,3 @@ jobs:
         - name: Verify if container is running
         run: |
             docker ps
-        
-
-        
