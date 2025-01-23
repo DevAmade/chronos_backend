@@ -1,3 +1,6 @@
+-- Connexion à la base de données "chronos_database"
+\c chronos_database_test;
+
 -- Insertion dans la table avatar
 INSERT INTO avatar (id, name, photo)
 VALUES 

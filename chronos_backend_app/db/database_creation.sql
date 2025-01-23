@@ -1,8 +1,8 @@
 -- Supprimer la base de données si elle existe
-DROP DATABASE IF EXISTS chronos_database;
+-- DROP DATABASE IF EXISTS chronos_database;
 
 -- Créer la base de données de Chronos
-CREATE DATABASE chronos_database;
+-- CREATE DATABASE chronos_database;
 
 -- Connexion à la base de données "chronos_database"
 \c chronos_database;
