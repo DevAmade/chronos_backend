@@ -1,13 +1,15 @@
-name: Node.js CI
+name: Chronos API CI
 
 on: 
     push:
         branches: 
             - main
+            - devel
             - Docker_CI/CD
     pull_request:
         branches: 
             - main
+            - devel
 
 jobs:
 
@@ -16,32 +18,40 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-        - name: Checkout source code
-        uses: actions/checkout@v4
+            - name: Checkout source code
+              uses: actions/checkout@v4
 
-        - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-            node-version: 20.x
-            cache: 'npm'
+            - name: Set up Node
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20.x
+                cache: 'npm'
 
-        - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-        - name: Run test e2e
-        run: npm run test:e2e
+            - name: Run test e2e
+              run: npm run test:e2e
 
-        - name: Build project
-        run: npm run build
+            - name: Build project
+              run: npm run build
         
-        # - name: Build Docker image
-        # run: |
-        # docker build -t chronos-api .
+            # - name: Build Docker chronos_api image
+            #   if: github.ref == 'refs/heads/main'
+            #   run: |
+            #     docker build -t chronos-api .
+
+            # - name: Build Docker chronos_database image
+            #   if: github.ref == 'refs/heads/main'
+            #   run: |
+            #     docker build -t chronos-database ./db
     
-        - name: Run Docker container locally
-        run: |
-            docker-compose up -d --build
+            - name: Run Docker container locally
+            #   if: github.ref == 'refs/heads/main'
+              run: |
+                docker-compose up -d --build
         
-        - name: Verify if container is running
-        run: |
-            docker ps
+            - name: Verify if container is running
+            #   if: github.ref == 'refs/heads/main'
+              run: |
+                docker ps
