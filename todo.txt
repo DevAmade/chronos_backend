@@ -1,9 +1,0 @@
-Test
-Docker
-Github action
-
-Voir pour créer automatiquement BDD avec sequilize
-Gerer table media,
-Validation Pipe date futur, date passé, date avant autre date
-Gerer la prise en charge de photo,
-Revoir les logs
