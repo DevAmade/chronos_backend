@@ -19,7 +19,7 @@ jobs:
 
         defaults:
             run:
-                working-directory: ./frontend
+                working-directory: ./chronos_backend_app
 
         steps:
             - name: Checkout source code
