@@ -1,13 +1,15 @@
 services:
     chronos_api:
-        build: ./
+        build: 
+            context: .
+            dockerfile: dockerfile.dev
         container_name: chronos_api
         ports:
             - "3000:3000"
         networks:
             - chronos_network
         env_file:
-            - .env.prod
+            - .env.docker
         depends_on:
             - chronos_database
     chronos_database:
