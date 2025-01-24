@@ -1,4 +1,4 @@
-name: Chronos API CI
+name: Chronos API
 
 on: 
     push:
@@ -65,6 +65,8 @@ jobs:
          
         runs-on: ubuntu-latest
 
+        # if: github.ref == 'refs/heads/main'
+
         needs: test
 
         defaults:
@@ -85,12 +87,6 @@ jobs:
         steps:
             - name: Checkout source code
               uses: actions/checkout@v4
-
-            # - name: Set up Node
-            #   uses: actions/setup-node@v4
-            #   with:
-            #     node-version: 20
-            #     cache: 'npm'
             
             - name: Install dependencies
               run: npm install --production
@@ -106,6 +102,7 @@ jobs:
 
             - name: Build and push Docker image
               run: |
+                TAG=${{ github.sha }}
                 docker build \
                     --build-arg API_PORT=${API_PORT} \
                     --build-arg DATABASE_PORT=${DATABASE_PORT} \
@@ -116,5 +113,5 @@ jobs:
                     --build-arg DATABASE_PASSWORD=${DATABASE_PASSWORD} \
                     --build-arg JWT_KEY_ADMIN=${JWT_KEY_ADMIN} \
                     --build-arg JWT_KEY_PLAYER=${JWT_KEY_PLAYER} \
-                    -t chronos_app:latest -f dockerfile.prod .
-                docker push ${{ secrets.DOCKER_USERNAME }}/chronos_app
+                    -t ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG -f dockerfile.prod .
+                docker push ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG
