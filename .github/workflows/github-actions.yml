@@ -1,10 +1,6 @@
 name: Chronos API
 
-on: 
-    push:
-    pull_request:
-        branches: 
-            - main
+on: [push]
 
 jobs:
 
@@ -113,6 +109,7 @@ jobs:
             
             - name: Push Docker image
               run: |
+                TAG=${{ github.sha }}
                 docker push ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG
                 docker push ${{ secrets.DOCKER_USERNAME }}/chronos_api:latest
 
