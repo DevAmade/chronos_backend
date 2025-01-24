@@ -24,16 +24,16 @@ jobs:
         services:
             postgres:
                 image: postgres:latest
-            options: >-
-                --health-cmd="pg_isready -U postgres"
-                --health-timeout=5s
-                --health-start-period=10s
-                --health-interval=5s
-            ports:
-                - 5432:5432
-            env:
-                POSTGRES_USER: postgres
-                POSTGRES_PASSWORD: postgres
+                options: >-
+                    --health-cmd="pg_isready -U postgres"
+                    --health-timeout=5s
+                    --health-start-period=10s
+                    --health-interval=5s
+                ports:
+                    - 5432:5432
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
 
         steps:
             - name: Checkout source code
