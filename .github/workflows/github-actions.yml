@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-    chronos_api_CI:
+    test:
 
         runs-on: ubuntu-latest
 
@@ -61,15 +61,23 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Set up database for tests
+            - name: Set up a test database
               run: PGPASSWORD=postgres psql -h localhost -U postgres -a -f "./sql/database_test_creation.sql"
-              run: PGPASSWORD=postgres psql -h localhost -U postgres -a -f "./sql/seed.sql"
 
-            # - name: Set up database 2/2
-            #   run: PGPASSWORD=postgres psql -h localhost -U postgres -a -f "./sql/seed.sql"
+            - name: Insert data into the test database
+              run: PGPASSWORD=postgres psql -h localhost -U postgres -a -f "./sql/seed.sql"
 
             - name: Run test e2e
               run: npm run test:e2e
+    
+    build:
+         
+        runs-on: ubuntu-latest
 
+        defaults:
+            run:
+                working-directory: ./chronos_backend_app
+        
+        steps:
             - name: Build project
               run: npm run build
