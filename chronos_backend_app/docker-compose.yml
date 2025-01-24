@@ -19,7 +19,7 @@ services:
             - chronos_network
         volumes:
             - chronos_data:/var/lib/postgresql/data
-            - ./db:/docker-entrypoint-initdb.d
+            - ./sql/database_creation.sql:/docker-entrypoint-initdb.d/database_creation.sql
         env_file:
             - .env.db
 

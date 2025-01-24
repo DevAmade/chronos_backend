@@ -13,17 +13,34 @@ on:
 
 jobs:
 
-    test:
+    chronos_api_CI/CD:
 
         runs-on: ubuntu-latest
 
         defaults:
             run:
                 working-directory: ./chronos_backend_app
+        
+        services:
+            postgres:
+                image: postgres:latest
+            options: >-
+                --health-cmd="pg_isready -U postgres"
+                --health-timeout=5s
+                --health-start-period=10s
+                --health-interval=5s
+            env:
+                POSTGRES_USER: postgres
+                POSTGRES_PASSWORD: postgres
+            ports:
+                - 5432:5432
 
         steps:
             - name: Checkout source code
               uses: actions/checkout@v4
+            
+            # - name: Change directory
+            #   run: cd chronos_backend_app
 
             # - name: Set up Node
             #   uses: actions/setup-node@v4
@@ -34,28 +51,14 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Set up database 1/2
+              run: psql -U postgres -a -f "./sql/database_test_creation.sql"
+
+            - name: Set up database 2/2
+              run: psql -U postgres -a -f "./sql/seed.sql"
+
             - name: Run test e2e
               run: npm run test:e2e
 
             - name: Build project
               run: npm run build
-        
-            # - name: Build Docker chronos_api image
-            #   if: github.ref == 'refs/heads/main'
-            #   run: |
-            #     docker build -t chronos-api .
-
-            # - name: Build Docker chronos_database image
-            #   if: github.ref == 'refs/heads/main'
-            #   run: |
-            #     docker build -t chronos-database ./db
-    
-            - name: Run Docker container locally
-            #   if: github.ref == 'refs/heads/main'
-              run: |
-                docker-compose up -d --build
-        
-            - name: Verify if container is running
-            #   if: github.ref == 'refs/heads/main'
-              run: |
-                docker ps
