@@ -6,9 +6,9 @@ COPY src/ /chronos_backend_app/src/
 COPY package*.json /chronos_backend_app/
 COPY tsconfig*.json /chronos_backend_app/
 
-RUN npm install
+RUN npm install --production
 RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "start"]

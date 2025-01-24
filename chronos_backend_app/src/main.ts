@@ -22,10 +22,10 @@ async function bootstrap() {
         methods: 'GET, PUT, POST, DELETE',
     });
 
-    await app.listen(configService.get('APP_PORT'));
+    await app.listen(configService.get('API_PORT'));
 
     loggerService.log(
-        `Server listen: ${configService.get('APP_HOST')}:${configService.get('APP_PORT')}`,
+        `Server listen: ${configService.get('API_HOST')}:${configService.get('API_PORT')}`,
         'Server',
     );
 }
