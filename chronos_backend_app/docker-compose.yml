@@ -3,14 +3,14 @@ services:
         # build: 
         #     context: .
         #     dockerfile: dockerfile.dev
-        image: devamade/chronos_api:22673790d963394b1041cacaaa3465fa09aba9a6
+        image: devamade/chronos_api:c4f09938581ecf89a3581e806baaa6e4f70a527a
         container_name: chronos_api
         ports:
             - "3000:3000"
         networks:
             - chronos_network
-        env_file:
-            - .env.docker
+        # env_file:
+        #     - .env.docker
         depends_on:
             - chronos_database
     chronos_database:
