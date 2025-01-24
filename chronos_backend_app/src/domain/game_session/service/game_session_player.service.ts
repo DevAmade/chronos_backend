@@ -22,8 +22,8 @@ export class GameSessionPlayerService {
         return await this.gameSessionPlayerModel.create(gameSessionPlayerDto as any);
     }
 
-    async removeGameSessionPlayer(playerId: UUID, gameId: UUID): Promise<GameSessionPlayer> {
-        const gameSessionPlayer = await this.findOneByAttribute(playerId, gameId);
+    async removeGameSessionPlayer(playerId: UUID, gameSessionId: UUID): Promise<GameSessionPlayer> {
+        const gameSessionPlayer = await this.findOneByAttribute(playerId, gameSessionId);
 
         if(!gameSessionPlayer) {
             return null;
