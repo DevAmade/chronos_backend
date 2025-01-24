@@ -3,7 +3,7 @@ services:
         # build: 
         #     context: .
         #     dockerfile: dockerfile.dev
-        image: devamade/chronos_api:8fe392e26e816d645fe155f15c53f2759044b0b2
+        image: devamade/chronos_api:c05b24cce9080b54ca46728f7be4855d35d1c15a
         container_name: chronos_api
         ports:
             - "3000:3000"

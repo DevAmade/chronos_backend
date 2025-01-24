@@ -85,7 +85,7 @@ jobs:
                 username: ${{ secrets.DOCKER_USERNAME }}
                 password: ${{ secrets.DOCKER_PASSWORD }}
 
-            - name: Build and push Docker image
+            - name: Build Docker image
               env:
                 API_PORT: 3000
                 DATABASE_PORT: 5432
@@ -99,14 +99,20 @@ jobs:
               run: |
                 TAG=${{ github.sha }}
                 docker build \
-                    --build-arg API_PORT=${API_PORT} \
-                    --build-arg DATABASE_PORT=${DATABASE_PORT} \
-                    --build-arg DATABASE_DIALECT=${DATABASE_DIALECT} \
-                    --build-arg DATABASE_HOST=${DATABASE_HOST} \
-                    --build-arg DATABASE_NAME=${DATABASE_NAME} \
-                    --build-arg DATABASE_USERNAME=${DATABASE_USERNAME} \
-                    --build-arg DATABASE_PASSWORD=${DATABASE_PASSWORD} \
+                    --build-arg API_PORT=3000 \
+                    --build-arg DATABASE_PORT=5432 \
+                    --build-arg DATABASE_DIALECT=postgres \
+                    --build-arg DATABASE_HOST=chronos_database \
+                    --build-arg DATABASE_NAME=chronos_database \
+                    --build-arg DATABASE_USERNAME=postgres \
+                    --build-arg DATABASE_PASSWORD=root \
                     --build-arg JWT_KEY_ADMIN=${JWT_KEY_ADMIN} \
                     --build-arg JWT_KEY_PLAYER=${JWT_KEY_PLAYER} \
                     -t ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG -f dockerfile.prod .
+                docker tag ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG ${{ secrets.DOCKER_USERNAME }}/chronos_api:latest
+            
+            - name: Push Docker image
+              run: |
                 docker push ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG
+                docker push ${{ secrets.DOCKER_USERNAME }}/chronos_api:latest
+
