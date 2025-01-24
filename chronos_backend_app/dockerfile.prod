@@ -3,6 +3,7 @@ FROM node:latest
 WORKDIR /chronos_backend_app/
 
 COPY dist/ /chronos_backend_app/dist/
+COPY node_modules/ /chronos_backend_app/node_modules/
 
 EXPOSE 3000
 
