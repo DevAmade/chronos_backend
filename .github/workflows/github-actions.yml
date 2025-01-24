@@ -94,16 +94,26 @@ jobs:
                 password: ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Build and push Docker image
+              env:
+                  DATABASE_DIALECT: postgres
+                  DATABASE_HOST: chronos_database
+                  DATABASE_PORT: 5432
+                  DATABASE_NAME: chronos_database
+                  DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+                  DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+                  API_PORT: 3000
+                  JWT_KEY_ADMIN: ${{ secrets.JWT_KEY_ADMIN }}
+                  JWT_KEY_PLAYER: ${{ secrets.JWT_KEY_PLAYER }}
               run: |
                 docker build \
-                    --build-arg DATABASE_DIALECT=postgres \
-                    --build-arg DATABASE_HOST=chronos_database \
-                    --build-arg DATABASE_PORT=5432 \
-                    --build-arg DATABASE_USERNAME=postgres \
-                    --build-arg DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
-                    --build-arg DATABASE_NAME=chronos_database \
-                    --build-arg APP_PORT=3000 \
-                    --build-arg JWT_KEY_ADMIN=${{ secrets.JWT_KEY_ADMIN }} \
-                    --build-arg JWT_KEY_PLAYER=${{ secrets.JWT_KEY_PLAYER }} \
+                    --build-arg DATABASE_DIALECT=${DATABASE_DIALECT} \
+                    --build-arg DATABASE_HOST=${DATABASE_HOST} \
+                    --build-arg DATABASE_PORT=${DATABASE_PORT} \
+                    --build-arg API_PORT=${API_PORT} \
+                    --build-arg DATABASE_USERNAME=${DATABASE_USERNAME} \
+                    --build-arg DATABASE_PASSWORD=${DATABASE_PASSWORD} \
+                    --build-arg DATABASE_NAME=${DATABASE_NAME} \
+                    --build-arg JWT_KEY_ADMIN=${JWT_KEY_ADMIN} \
+                    --build-arg JWT_KEY_PLAYER=${JWT_KEY_PLAYER} \
                     -t chronos_app:latest -f dockerfile.prod .
                 docker push ${{ secrets.DOCKER_USERNAME }}/chronos_app:latest
