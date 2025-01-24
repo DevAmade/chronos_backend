@@ -21,6 +21,16 @@ jobs:
             run:
                 working-directory: ./chronos_backend_app
         
+        env:
+            DATABASE_DIALECT: postgres
+            DATABASE_HOST: localhost
+            DATABASE_PORT: 5432
+            DATABASE_USERNAME: postgres
+            DATABASE_PASSWORD: postgres
+            DATABASE_TEST_NAME: chronos_database_test
+            JWT_KEY_ADMIN: secret_key_admin
+            JWT_KEY_PLAYER: secret_key_player
+        
         services:
             postgres:
                 image: postgres:latest
