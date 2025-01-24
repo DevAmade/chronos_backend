@@ -1,15 +1,10 @@
 name: Chronos API
 
 on: 
-    push:
-        branches: 
-            - main
-            - devel
-            - Docker_CI/CD
+    [push]
     pull_request:
         branches: 
             - main
-            - devel
 
 jobs:
 
@@ -73,16 +68,6 @@ jobs:
             run:
                 working-directory: ./chronos_backend_app
 
-        env:
-            API_PORT: 3000
-            DATABASE_PORT: 5432
-            DATABASE_DIALECT: postgres
-            DATABASE_HOST: chronos_database
-            DATABASE_NAME: chronos_database
-            DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-            DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-            JWT_KEY_ADMIN: ${{ secrets.JWT_KEY_ADMIN }}
-            JWT_KEY_PLAYER: ${{ secrets.JWT_KEY_PLAYER }}
 
         steps:
             - name: Checkout source code
@@ -101,6 +86,16 @@ jobs:
                 password: ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Build and push Docker image
+              env:
+                API_PORT: 3000
+                DATABASE_PORT: 5432
+                DATABASE_DIALECT: postgres
+                DATABASE_HOST: chronos_database
+                DATABASE_NAME: chronos_database
+                DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+                DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+                JWT_KEY_ADMIN: ${{ secrets.JWT_KEY_ADMIN }}
+                JWT_KEY_PLAYER: ${{ secrets.JWT_KEY_PLAYER }}
               run: |
                 TAG=${{ github.sha }}
                 docker build \
