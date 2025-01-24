@@ -54,9 +54,9 @@ jobs:
     
     build:
          
-        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
 
-        # if: github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
 
         needs: test
 
@@ -82,29 +82,9 @@ jobs:
                 password: ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Build Docker image
-              env:
-                API_PORT: 3000
-                DATABASE_PORT: 5432
-                DATABASE_DIALECT: postgres
-                DATABASE_HOST: chronos_database
-                DATABASE_NAME: chronos_database
-                DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-                DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-                JWT_KEY_ADMIN: ${{ secrets.JWT_KEY_ADMIN }}
-                JWT_KEY_PLAYER: ${{ secrets.JWT_KEY_PLAYER }}
               run: |
                 TAG=${{ github.sha }}
-                docker build \
-                    --build-arg API_PORT=3000 \
-                    --build-arg DATABASE_PORT=5432 \
-                    --build-arg DATABASE_DIALECT=postgres \
-                    --build-arg DATABASE_HOST=chronos_database \
-                    --build-arg DATABASE_NAME=chronos_database \
-                    --build-arg DATABASE_USERNAME=postgres \
-                    --build-arg DATABASE_PASSWORD=root \
-                    --build-arg JWT_KEY_ADMIN=${JWT_KEY_ADMIN} \
-                    --build-arg JWT_KEY_PLAYER=${JWT_KEY_PLAYER} \
-                    -t ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG -f dockerfile.prod .
+                docker build -t ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG -f dockerfile.prod .
                 docker tag ${{ secrets.DOCKER_USERNAME }}/chronos_api:$TAG ${{ secrets.DOCKER_USERNAME }}/chronos_api:latest
             
             - name: Push Docker image
